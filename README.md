@@ -9,7 +9,9 @@ Step 2: Download xampp and install composer.
 Step 3: At the end of Apache/Config/httpd.conf, append this configuration:
 
 <VirtualHost *:80>
+
     ServerName EPbackend.web
+
     DocumentRoot "<path_to_backend/web_folder>"
            
     <Directory "<path_to_backend/web_folder>">
@@ -32,10 +34,13 @@ Step 3: At the end of Apache/Config/httpd.conf, append this configuration:
       # Order allow,deny
       # Allow from all
     </Directory>
+
 </VirtualHost>
 
 <VirtualHost *:80>
+
     ServerName EPfrontend.web
+
     DocumentRoot "<path_to_frontend/web_folder>"
            
     <Directory "<path_to_frontend/web_folder>">
@@ -58,6 +63,7 @@ Step 3: At the end of Apache/Config/httpd.conf, append this configuration:
       # Order allow,deny
       # Allow from all
     </Directory>
+
 </VirtualHost>
 
 Remember to change the path in configuration to project folders.
