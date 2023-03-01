@@ -63,7 +63,9 @@ Step 3: At the end of Apache/Config/httpd.conf, append this configuration:
 Remember to change the path in configuration to project folders.
 
 Step 4: Add this line to host file in c:\Windows\System32\Drivers\etc\hosts:
+
 127.0.0.1   EPfrontend.web
+
 127.0.0.1   EPbackend.web
 
 Step 5: In phpmyadmin, create database named enterprise_project.
