@@ -4,12 +4,12 @@ namespace backend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Academic;
+use backend\models\Campaign;
 
 /**
- * AcademicSearch represents the model behind the search form of `backend\models\Academic`.
+ * CampaignSearch represents the model behind the search form of `backend\models\Campaign`.
  */
-class AcademicSearch extends Academic
+class CampaignSearch extends Campaign
 {
     /**
      * {@inheritdoc}
@@ -40,7 +40,7 @@ class AcademicSearch extends Academic
      */
     public function search($params)
     {
-        $query = Academic::find();
+        $query = Campaign::find();
 
         // add conditions that should always apply here
 

@@ -1,24 +1,24 @@
 <?php
 
-use backend\models\Academic;
+use backend\models\Campaign;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /** @var yii\web\View $this */
-/** @var backend\models\AcademicSearch $searchModel */
+/** @var backend\models\CampaignSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = Yii::t('app', 'Academics');
+$this->title = Yii::t('app', 'Campaigns');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="academic-index">
+<div class="campaign-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Academic'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Create Campaign'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'updated_by',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Academic $model, $key, $index, $column) {
+                'urlCreator' => function ($action, Campaign $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],

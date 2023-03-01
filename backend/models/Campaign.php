@@ -2,7 +2,7 @@
 
 namespace backend\models;
 
-use common\models\Academic as ModelsAcademic;
+use common\models\Campaign as ModelsCampaign;
 use Yii;
 
 /**
@@ -20,7 +20,7 @@ use Yii;
  * @property Idea[] $ideas
  */
 
-class Academic extends ModelsAcademic
+class Campaign extends ModelsCampaign
 {
     
 }

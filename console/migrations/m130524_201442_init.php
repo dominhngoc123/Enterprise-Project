@@ -47,7 +47,7 @@ class m130524_201442_init extends Migration
             'updated_by' => $this->string(),
         ], $tableOptions);
 
-        $this->createTable('{{%academic}}', [
+        $this->createTable('{{%campaign}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string(50)->notNull()->unique(),
             'start_date' => $this->string(),
@@ -67,6 +67,7 @@ class m130524_201442_init extends Migration
             'full_name' => $this->string(50),
             'email' => $this->string(50)->unique(),
             'dob' => $this->string(20),
+            'phone_number' => $this->string(10),
             'avatar' => $this->string(255),
             'address' => $this->string(255),
             'departmentId' => $this->integer(),
@@ -85,7 +86,7 @@ class m130524_201442_init extends Migration
             'parentId' => $this->integer(),
             'userId' => $this->integer(),
             'categoryId' => $this->integer(),
-            'academicId' => $this->integer(),
+            'campaignId' => $this->integer(),
             'upvote_count' => $this->integer(),
             'downvote_count' => $this->integer(),
             'post_type' => $this->smallInteger(),
@@ -110,7 +111,7 @@ class m130524_201442_init extends Migration
         $this->addForeignKey('FK_idea_user', 'idea', 'userId', 'user', 'id');
         $this->addForeignKey('FK_attachment_idea', 'attachment', 'ideaId', 'idea', 'id');
         $this->addForeignKey('FK_user_category', 'idea', 'categoryId', 'category', 'id');
-        $this->addForeignKey('FK_idea_academic', 'idea', 'academicId', 'academic', 'id');
+        $this->addForeignKey('FK_idea_campaign', 'idea', 'campaignId', 'campaign', 'id');
         $this->addForeignKey('FK_reaction_user', 'reaction', 'userId', 'user', 'id');
         $this->addForeignKey('FK_reaction_idea', 'reaction', 'ideaId', 'idea', 'id');
     }

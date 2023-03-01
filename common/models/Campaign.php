@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "academic".
+ * This is the model class for table "campaign".
  *
  * @property int $id
  * @property string|null $start_date
@@ -19,14 +19,14 @@ use Yii;
  *
  * @property Idea[] $ideas
  */
-class Academic extends \yii\db\ActiveRecord
+class Campaign extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'academic';
+        return 'campaign';
     }
 
     /**
@@ -96,6 +96,6 @@ class Academic extends \yii\db\ActiveRecord
      */
     public function getIdeas()
     {
-        return $this->hasMany(Idea::class, ['academicId' => 'id']);
+        return $this->hasMany(Idea::class, ['campaignId' => 'id']);
     }
 }
