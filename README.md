@@ -1,6 +1,7 @@
 # Enterprise-Project
 
 Setup project:
+
 Step 1: Clone project from backend branch.
 
 Step 2: Download xampp and install composer.
