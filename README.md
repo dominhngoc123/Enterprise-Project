@@ -83,3 +83,7 @@ Step 6: Open project root in terminal, run: php yii migrate.
 Step 7: Run composer update command in this terminal.
 
 Step 8: Open http://EPbackend.web (for backend) and http://EPfrontend.web (for frontend).
+
+Step 9: Create a department and a account with username "admin" (backdoor).
+
+Step 10: Login and using features.
