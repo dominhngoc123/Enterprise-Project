@@ -48,7 +48,17 @@ class IdeaController extends Controller
                         'delete' => ['POST'],
                     ],
                 ],
+                'access' => [
+                    'class' => \yii\filters\AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
+                    ],
+                ],
             ]
+            
         );
     }
 
@@ -189,7 +199,7 @@ class IdeaController extends Controller
             'files_type' => $files_type,
             'model' => $model,
             'category' => ArrayHelper::map($category, 'id', 'name'),
-            'Campaign' => ArrayHelper::map($Campaign, 'id', 'name'),
+            'campaign' => ArrayHelper::map($Campaign, 'id', 'name'),
             'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
         ]);
     }

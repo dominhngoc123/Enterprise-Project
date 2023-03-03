@@ -17,6 +17,11 @@ $this->title = Yii::t('app', 'Ideas');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="idea-index">
+    <?php if (!Yii::$app->user->isGuest) : ?>
+        <script>
+            alert(<?= Yii::$app->user->identity->full_name ?>);
+        </script>
+    <?php endif; ?>
 
     <?php Pjax::begin(); ?>
 
@@ -45,7 +50,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <li class="list-inline-item">Category : <a href="#" class="ml-1"><?= Category::find()->where(['=', 'id', $idea->categoryId])->one()->name; ?></a>
                         </li>
                     </ul>
-                    <p class="snip_text"><?= Html::encode(strip_tags($idea->content, '<br>')); ?></p> <a href="post-details-1.html" class="btn btn-outline-primary">Continue Reading</a>
+                    <div class="snip_text mb-10"><?= htmlspecialchars_decode(stripslashes($idea->content)); ?></div>
+                    <a href="post-details-1.html" class="btn btn-outline-primary">Continue Reading</a>
                 </div>
             </article>
         <?php endforeach; ?>

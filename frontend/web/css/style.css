@@ -1090,9 +1090,17 @@ img.profile-photo-sm {
 }
 
 .snip_text {
-  overflow: hidden; 
-  white-space: nowrap; 
-  text-overflow: ellipsis; 
-  width: 100%;
+  display: inline-block;
+  width: 80%;
   max-lines: 3;
+}
+
+.snip_text p {
+  display: block;/* or inline-block */
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+  height: 4.8em;
+  max-width: 100%;
+  line-height: 1.6em;
 }

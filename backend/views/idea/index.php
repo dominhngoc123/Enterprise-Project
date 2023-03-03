@@ -37,13 +37,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'title:ntext',
-            [
-                'attribute' => 'content',
-                'headerOptions' => ['style' => 'width:40%'],
-                'value' => function($model) {
-                    return Html::encode(strip_tags($model->content));
-                }
-            ],
+            // [
+            //     'attribute' => 'content',
+            //     'headerOptions' => ['style' => 'width:40%'],
+            //     'value' => function($model) {
+            //         return Html::encode(strip_tags($model->content));
+            //     }
+            // ],
             // 'parentId',
             [
                 'attribute' => 'userId',
@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->status == StatusConstant::ACTIVE ? 'Active' : 'Inactive';
                 }
             ],
-            //'created_at',
+            'created_at',
             //'created_by',
             //'updated_at',
             //'updated_by',
