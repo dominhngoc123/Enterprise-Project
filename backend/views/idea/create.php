@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'files_type' => $files_type,
         'model' => $model,
         'category' => $category,
-        'academic' => $academic,
+        'campaign' => $campaign,
         'ideaType' => $ideaType,
     ]) ?>
 

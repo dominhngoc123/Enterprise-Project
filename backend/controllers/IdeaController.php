@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use backend\models\Academic;
+use backend\models\Campaign;
 use backend\models\Attachment;
 use backend\models\Category;
 use backend\models\Idea;
@@ -119,7 +119,7 @@ class IdeaController extends Controller
         }
 
         $category = Category::find()->where(['status' => 1])->all();
-        $academic = Academic::find()->where(['status' => 1])->all();
+        $campaign = Campaign::find()->where(['status' => 1])->all();
 
         return $this->render('create', [
             'all_files' => $all_files,
@@ -127,7 +127,7 @@ class IdeaController extends Controller
             'files_type' => $files_type,
             'model' => $model,
             'category' => ArrayHelper::map($category, 'id', 'name'),
-            'academic' => ArrayHelper::map($academic, 'id', 'name'),
+            'campaign' => ArrayHelper::map($campaign, 'id', 'name'),
             'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
         ]);
     }
@@ -181,7 +181,7 @@ class IdeaController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
         $category = Category::find()->where(['status' => 1])->all();
-        $academic = Academic::find()->where(['status' => 1])->all();
+        $Campaign = Campaign::find()->where(['status' => 1])->all();
 
         return $this->render('update', [
             'all_files' => $all_files,
@@ -189,7 +189,7 @@ class IdeaController extends Controller
             'files_type' => $files_type,
             'model' => $model,
             'category' => ArrayHelper::map($category, 'id', 'name'),
-            'academic' => ArrayHelper::map($academic, 'id', 'name'),
+            'Campaign' => ArrayHelper::map($Campaign, 'id', 'name'),
             'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
         ]);
     }

@@ -5,11 +5,11 @@ use yii\widgets\ActiveForm;
 use kartik\date\DatePicker;
 
 /** @var yii\web\View $this */
-/** @var backend\models\Academic $model */
+/** @var backend\models\Campaign $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="academic-form">
+<div class="campaign-form">
 
     <?php $form = ActiveForm::begin(); ?>
 

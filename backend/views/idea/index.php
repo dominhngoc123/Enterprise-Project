@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             //'attachmentId',
             //'categoryId',
-            //'academicId',
+            //'campaignId',
             //'upvote_count',
             //'downvote_count',
             //'post_type',

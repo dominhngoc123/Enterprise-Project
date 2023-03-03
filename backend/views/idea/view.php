@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\Academic;
+use backend\models\Campaign;
 use backend\models\Category;
 use backend\models\User;
 use common\models\constant\IdeaTypeConstant;
@@ -50,8 +50,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => Category::find()->where(['=', 'id', $model->categoryId])->one()->name
             ],
             [
-                'label' => Yii::t('app', 'Academic'),
-                'value' => Academic::find()->where(['=', 'id', $model->academicId])->one()->name
+                'label' => Yii::t('app', 'Campaign'),
+                'value' => Campaign::find()->where(['=', 'id', $model->campaignId])->one()->name
             ],
             // 'upvote_count',
             // 'downvote_count',

@@ -27,9 +27,9 @@ use yii\helpers\Url;
             ]) ?>
         </div>
         <div class="col col-md-6 col-lg-6 col-sm-12">
-            <?= $form->field($model, 'academicId')->widget(Select2::classname(), [
-                'data' => $academic,
-                'options' => ['placeholder' => 'Select an academic ...'],
+            <?= $form->field($model, 'campaignId')->widget(Select2::classname(), [
+                'data' => $campaign,
+                'options' => ['placeholder' => 'Select an campaign ...'],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],

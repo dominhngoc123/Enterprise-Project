@@ -15,7 +15,7 @@ use Yii;
  * @property int|null $userId
  * @property int|null $attachmentId
  * @property int|null $categoryId
- * @property int|null $academicId
+ * @property int|null $campaignId
  * @property int|null $upvote_count
  * @property int|null $downvote_count
  * @property int|null $post_type
@@ -25,7 +25,7 @@ use Yii;
  * @property string|null $updated_at
  * @property string|null $updated_by
  *
- * @property Academic $academic
+ * @property Campaign $campaign
  * @property Attachment $attachment
  * @property Category $category
  * @property Idea[] $ideas

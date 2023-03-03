@@ -17,7 +17,7 @@ class IdeaSearch extends Idea
     public function rules()
     {
         return [
-            [['id', 'parentId', 'academicId', 'upvote_count', 'downvote_count', 'post_type'], 'integer'],
+            [['id', 'parentId', 'campaignId', 'upvote_count', 'downvote_count', 'post_type'], 'integer'],
             [['title', 'content', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'safe'],
             [['userId', 'categoryId', 'status'], 'safe']
         ];
@@ -66,7 +66,7 @@ class IdeaSearch extends Idea
             'parentId' => $this->parentId,
             'userId' => $this->userId,
             'categoryId' => $this->categoryId,
-            'academicId' => $this->academicId,
+            'campaignId' => $this->campaignId,
             'upvote_count' => $this->upvote_count,
             'downvote_count' => $this->downvote_count,
             'post_type' => $this->post_type,

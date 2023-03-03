@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
         'files_type' => $files_type,
         'model' => $model,
         'category' => $category,
-        'academic' => $academic,
+        'campaign' => $campaign,
         'ideaType' => $ideaType,
     ]) ?>
 

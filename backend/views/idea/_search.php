@@ -32,7 +32,7 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'categoryId') ?>
 
-    <?php // echo $form->field($model, 'academicId') ?>
+    <?php // echo $form->field($model, 'campaignId') ?>
 
     <?php // echo $form->field($model, 'upvote_count') ?>
 

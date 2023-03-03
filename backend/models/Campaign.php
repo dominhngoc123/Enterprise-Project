@@ -6,7 +6,7 @@ use common\models\Campaign as ModelsCampaign;
 use Yii;
 
 /**
- * This is the model class for table "academic".
+ * This is the model class for table "campaign".
  *
  * @property int $id
  * @property string|null $start_date

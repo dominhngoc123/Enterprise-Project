@@ -13,7 +13,7 @@ use Yii;
  * @property int|null $parentId
  * @property int|null $userId
  * @property int|null $categoryId
- * @property int|null $academicId
+ * @property int|null $campaignId
  * @property int|null $upvote_count
  * @property int|null $downvote_count
  * @property int|null $post_type
@@ -23,7 +23,7 @@ use Yii;
  * @property string|null $updated_at
  * @property string|null $updated_by
  *
- * @property Academic $academic
+ * @property Campaign $campaign
  * @property Attachment[] $attachments
  * @property Category $category
  * @property Idea[] $ideas
@@ -51,9 +51,9 @@ class Idea extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'content'], 'string'],
-            [['parentId', 'userId', 'categoryId', 'academicId', 'upvote_count', 'downvote_count', 'post_type', 'status'], 'integer'],
+            [['parentId', 'userId', 'categoryId', 'campaignId', 'upvote_count', 'downvote_count', 'post_type', 'status'], 'integer'],
             [['created_at', 'created_by', 'updated_at', 'updated_by'], 'string', 'max' => 255],
-            [['academicId'], 'exist', 'skipOnError' => true, 'targetClass' => Academic::class, 'targetAttribute' => ['academicId' => 'id']],
+            [['campaignId'], 'exist', 'skipOnError' => true, 'targetClass' => campaign::class, 'targetAttribute' => ['campaignId' => 'id']],
             [['parentId'], 'exist', 'skipOnError' => true, 'targetClass' => Idea::class, 'targetAttribute' => ['parentId' => 'id']],
             [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['userId' => 'id']],
             [['categoryId'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['categoryId' => 'id']],
@@ -73,7 +73,7 @@ class Idea extends \yii\db\ActiveRecord
             'parentId' => Yii::t('app', 'Parent ID'),
             'userId' => Yii::t('app', 'User ID'),
             'categoryId' => Yii::t('app', 'Category ID'),
-            'academicId' => Yii::t('app', 'Campaign ID'),
+            'campaignId' => Yii::t('app', 'Campaign ID'),
             'upvote_count' => Yii::t('app', 'Upvote Count'),
             'downvote_count' => Yii::t('app', 'Downvote Count'),
             'post_type' => Yii::t('app', 'Post Type'),
@@ -99,13 +99,13 @@ class Idea extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Academic]].
+     * Gets query for [[campaign]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAcademic()
+    public function getCampaign()
     {
-        return $this->hasOne(Academic::class, ['id' => 'academicId']);
+        return $this->hasOne(Campaign::class, ['id' => 'campaignId']);
     }
 
     /**
