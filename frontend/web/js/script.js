@@ -91,4 +91,43 @@
 		nextArrow: '<button type=\'button\' class=\'nextArrow\'><i class=\'ti-angle-right\'></i></button>'
 	});
 
+	$('#like_btn').on('click', function() {
+		if ($(this).hasClass('disabled'))
+		{
+			return;
+		}
+		else
+		{
+			
+			$(this).addClass('disabled');
+			let like_count = parseInt($.trim($('#like_count').text())) + 1;
+			let dislike_count = parseInt($.trim($('#dislike_count').text())) - 1;
+			$('#like_count').text(like_count);
+			$('#dislike_count').text(dislike_count < 0 ? 0 : dislike_count);
+			if ($('#unlike_btn').hasClass('disabled'))
+			{
+				$('#unlike_btn').removeClass('disabled');
+			}
+		}
+	});
+
+	$('#unlike_btn').on('click', function() {
+		if ($(this).hasClass('disabled'))
+		{
+			return;
+		}
+		else
+		{
+			$(this).addClass('disabled');
+			let like_count = parseInt($.trim($('#like_count').text())) - 1;
+			let dislike_count = parseInt($.trim($('#dislike_count').text())) + 1;
+			$('#like_count').text(like_count < 0 ? 0 : like_count);
+			$('#dislike_count').text(dislike_count);
+			if ($('#like_btn').hasClass('disabled'))
+			{
+				$('#like_btn').removeClass('disabled');
+			}
+		}
+	});
+
 })(jQuery);

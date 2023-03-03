@@ -26,8 +26,17 @@ use yii\helpers\Html;
                <li class="nav-item">
                   <a class="nav-link" href="contact.html">Contact</a>
                </li>
-               <li class="nav-item">
-               <a class="nav-link" href="contact.html">Contact</a>
+               <li class="nav-item dropdown">
+                  <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+                     aria-expanded="false">
+                     Account</i>
+                  </a>
+                  <div class="dropdown-menu">
+                     <a class="dropdown-item" href="index-full.html">Profile</a>
+                     <a class="dropdown-item" href="index-full-left.html">Posted ideas</a>
+                     <a class="dropdown-item" href="index-full-right.html">View data</a>
+                     <a class="dropdown-item" href="index-list.html">Logout</a>
+                  </div>
                </li>
             </ul>
 

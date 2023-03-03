@@ -17,11 +17,6 @@ $this->title = Yii::t('app', 'Ideas');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="idea-index">
-    <?php if (!Yii::$app->user->isGuest) : ?>
-        <script>
-            alert(<?= Yii::$app->user->identity->full_name ?>);
-        </script>
-    <?php endif; ?>
 
     <?php Pjax::begin(); ?>
 
