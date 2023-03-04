@@ -78,9 +78,9 @@ Step 4: Add this line to host file in c:\Windows\System32\Drivers\etc\hosts:
 
 Step 5: In phpmyadmin, create database named enterprise_project.
 
-Step 6: Open project root in terminal, run: php yii migrate.
+Step 6: Run composer update command (If the terminal warning "... zip and upzip ...", open Apache config in xampp control panel, choose php.ini and find for extension=zip, remove ";" character at the begining and run again) and php init to setup the project.
 
-Step 7: Run composer update command in this terminal.
+Step 7: Open project root in terminal, run: php yii migrate.
 
 Step 8: Open http://EPbackend.web (for backend) and http://EPfrontend.web (for frontend).
 
