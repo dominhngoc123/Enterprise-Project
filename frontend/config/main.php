@@ -25,11 +25,15 @@ return [
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+            'identityCookie' => ['name' => '_identity-auth', 'httpOnly' => true, 'domain' => '.EP.web'],
         ],
         'session' => [
-            // this is the name of the session cookie used for login on the frontend
-            'name' => 'advanced-frontend',
+            // this is the name of the session cookie used for login on the backend
+            'name' => 'auth_session',
+            'cookieParams' => [
+                'domain' => '.EP.web',
+                'httpOnly' => true,
+            ],
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

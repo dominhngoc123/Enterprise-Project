@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 ?>
 <!-- Navbar -->
@@ -32,10 +33,10 @@ use yii\helpers\Html;
                      Account</i>
                   </a>
                   <div class="dropdown-menu">
-                     <a class="dropdown-item" href="index-full.html">Profile</a>
+                     <a class="dropdown-item" href="#" class="d-block" data-toggle="modal" data-target="#profile-modal">Profile</a>
                      <a class="dropdown-item" href="index-full-left.html">Posted ideas</a>
                      <a class="dropdown-item" href="index-full-right.html">View data</a>
-                     <a class="dropdown-item" href="index-list.html">Logout</a>
+                     <?= Html::a('Logout', ['/site/logout'], ['data-method' => 'post', 'class' => 'dropdown-item']) ?>
                   </div>
                </li>
             </ul>

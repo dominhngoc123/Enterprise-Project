@@ -90,6 +90,8 @@ $this->registerJsFile($publishedRes[1] . '/control_sidebar.js', ['depends' => '\
     <!-- Content Wrapper. Contains page content -->
 
 
+    <?= $this->render('profile-modal') ?>
+    
     <!-- /.content-wrapper -->
     <!-- Main Footer -->
     <?= $this->render('footer') ?>

@@ -56,10 +56,9 @@ class Reaction extends \yii\db\ActiveRecord
     public function beforeSave($insert) {
 
         if ($this->isNewRecord) {
-            $this->created_at = new \yii\db\Expression('NOW()');
             $this->userId = Yii::$app->user->identity->id;
-            $this->status = 1;
         }
+        $this->created_at = new \yii\db\Expression('NOW()');
         return parent::beforeSave($insert);
     }
 
