@@ -26,8 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <article class="row mb-5">
                 <div class="col-md-4 mb-4 mb-md-0">
                     <div class="post-slider slider-sm">
-                        <img loading="lazy" src="images/post/post-4.jpg" class="img-fluid" alt="post-thumb" style="height:200px; object-fit: cover;">
-                        <img loading="lazy" src="images/post/post-1.jpg" class="img-fluid" alt="post-thumb" style="height:200px; object-fit: cover;">
+                        <img loading="lazy" src="../images/post/post-4.jpg" class="img-fluid" alt="post-thumb" style="height:200px; object-fit: cover;">
+                        <img loading="lazy" src="../images/post/post-1.jpg" class="img-fluid" alt="post-thumb" style="height:200px; object-fit: cover;">
                     </div>
                 </div>
                 <div class="col-md-8">

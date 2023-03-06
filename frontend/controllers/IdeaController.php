@@ -7,6 +7,7 @@ use frontend\models\Attachment;
 use frontend\models\Category;
 use frontend\models\Idea;
 use frontend\models\IdeaSearch;
+use frontend\models\Reaction;
 use frontend\models\UploadForm;
 use Yii;
 use yii\bootstrap5\Html as Bootstrap5Html;
@@ -82,8 +83,10 @@ class IdeaController extends Controller
      */
     public function actionView($id)
     {
+        $reaction = Reaction::find()->where(['=', 'userId', Yii::$app->user->identity->id])->andWhere(['=', 'ideaId', $id])->one();
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'reaction' => $reaction
         ]);
     }
 

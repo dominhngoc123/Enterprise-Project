@@ -1,9 +1,12 @@
 <?php
 
+use common\models\constant\ReactionTypeConstant;
 use frontend\models\Category;
 use frontend\models\User;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
+use yii\widgets\Pjax;
 
 /** @var yii\web\View $this */
 /** @var frontend\models\Idea $model */
@@ -13,6 +16,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Ideas'), 'url' => ['
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
+<?php Pjax::begin(['enablePushState' => false]) ?>
 <div class="idea-view">
     <section class="section post-content">
         <div class="container post-container">
@@ -37,10 +41,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= htmlspecialchars_decode(stripslashes($model->content)); ?>
                     </div>
                     <div class="line-divider"></div>
-                    <div class="reaction">
-                        <a class="btn text-green" id="like_btn"><i class="fa fa-thumbs-up"></i>&nbsp;&nbsp;<span id="like_count"><?= $model->downvote_count ?></span></a>
-                        <a class="btn text-red" id="unlike_btn"><i class="fa fa-thumbs-down"></i>&nbsp;&nbsp;<span id="dislike_count"><?= $model->downvote_count ?></span></a>
-                    </div>
+                        <div class="reaction">
+                            <a href="<?= Url::to(['reaction/react-idea', 'ideaId' => $model->id, 'reactionType' => ReactionTypeConstant::LIKE]); ?>" class="btn text-green <?php if ($reaction && $reaction->status == ReactionTypeConstant::LIKE) { echo 'disabled'; } ?>" id="like_btn"><i class="fa fa-thumbs-up"></i>&nbsp;&nbsp;<span id="like_count"><?= $model->upvote_count ?></span></a>
+                            <a href="<?= Url::to(['reaction/react-idea', 'ideaId' => $model->id, 'reactionType' => ReactionTypeConstant::UNLIKE]); ?>" class="btn text-red <?php if ($reaction && $reaction->status == ReactionTypeConstant::UNLIKE) { echo 'disabled'; } ?>" id="unlike_btn"><i class="fa fa-thumbs-down"></i>&nbsp;&nbsp;<span id="dislike_count"><?= $model->downvote_count ?></span></a>
+                        </div>
                     <div class="post-comment">
                         <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" class="profile-photo-sm">
                         <p><a href="timeline.html" class="profile-link">Diana </a><i class="em em-laughing"></i> Lorem ipsum dolor sit
@@ -63,5 +67,5 @@ $this->params['breadcrumbs'][] = $this->title;
             </article>
         </div>
     </section>
-
 </div>
+<?php Pjax::end() ?>
