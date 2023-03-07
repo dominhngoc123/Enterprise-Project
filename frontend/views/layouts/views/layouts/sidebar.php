@@ -23,7 +23,7 @@ use yii\helpers\Url;
       <?php $categories = Category::find()->where(['=', 'status', StatusConstant::ACTIVE])->all(); ?>
       <?php if ($categories): ?>
          <?php foreach ($categories as $category): ?>
-            <li><a href="#!" class="d-flex"><?= $category->name ?>
+            <li><a href="<?= Url::to(['idea/get-ideas-by-category', 'categoryId' => $category->id]); ?>" class="d-flex"><?= $category->name ?>
                <small class="ml-auto">(1)</small></a>
             </li>
          <?php endforeach; ?>

@@ -36,14 +36,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     <ul class="list-inline post-meta mb-2">
                         <li class="list-inline-item"><i class="ti-user mr-2"></i><a href="author.html"><?= User::find()->where(['=', 'id', $idea->userId])->one()->full_name; ?></a>
                         </li>
-                        <li class="list-inline-item">
+                        <li class="list-inline-item">Posted at:
                             <?php
-                            $time = strtotime('10/16/2003');
-                            $date = date('Y-m-d', $time);
-                            echo "$date";
+                            $posted_at = strtotime($idea->created_at);
+                            $date = date('Y-m-d', $posted_at);
+                            $time = date('H:m', $posted_at);
+                            echo "$date $time";
                             ?>
                         </li>
-                        <li class="list-inline-item">Category : <a href="#" class="ml-1"><?= Category::find()->where(['=', 'id', $idea->categoryId])->one()->name; ?></a>
+                        <li class="list-inline-item">Category : <a href="<?= Url::to(['idea/get-ideas-by-category', 'categoryId' => $idea->categoryId]); ?>" class="ml-1"><?= Category::find()->where(['=', 'id', $idea->categoryId])->one()->name; ?></a>
                         </li>
                     </ul>
                     <div class="snip_text mb-10"><?= htmlspecialchars_decode(stripslashes($idea->content)); ?></div>

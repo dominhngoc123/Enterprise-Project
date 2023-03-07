@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\constant\StatusConstant;
 use frontend\models\Campaign;
 use frontend\models\Attachment;
 use frontend\models\Category;
@@ -257,6 +258,18 @@ class IdeaController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    public function actionGetIdeasByCategory($categoryId)
+    {
+        $query = Idea::find()->where(['=', 'categoryId', $categoryId])->andWhere(['=', 'status', StatusConstant::ACTIVE]);
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 2]);
+        $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
+        return $this->render('index', [
+            'ideas' => $ideas,
+            'pages' => $pages
+        ]);
     }
 
     private function getFileType($extension)
