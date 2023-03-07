@@ -16,22 +16,26 @@ $this->registerCssFile('https://code.ionicframework.com/ionicons/2.0.1/css/ionic
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>AdminLTE 3 | Log in</title>
     <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../../web/fonts/icomoon/style.css">
+    <link rel="stylesheet" href="../../../../web/css/owl.carousel.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../../../web/css/bootstrap.min.css">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="../../../../web/css/style.css">
     <?php $this->registerCsrfMetaTags() ?>
     <?php $this->head() ?>
 </head>
 <body class="hold-transition login-page">
 <?php  $this->beginBody() ?>
-<div class="login-box">
-    <div class="login-logo">
-        <a href="<?=Yii::$app->homeUrl?>"><b>Admin</b>LTE</a>
-    </div>
-    <!-- /.login-logo -->
 
     <?= $content ?>
-</div>
-<!-- /.login-box -->
 
+    <script src="../../../../js/jquery-3.3.1.min.js"></script>
+    <script src="../../../../js/popper.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+    <script src="../../../../js/main.js"></script>
 <?php $this->endBody() ?>
 </body>
 </html>
