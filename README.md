@@ -8,7 +8,7 @@ Step 2: Download xampp and install composer.
 
 Step 3: At the end of Apache/Config/httpd.conf, append this configuration:
 
-<VirtualHost *:80>
+    <VirtualHost *:80>
     
     ServerName EP.web
     
@@ -36,14 +36,16 @@ Step 3: At the end of Apache/Config/httpd.conf, append this configuration:
         # Order allow,deny
         # Allow from all
     </Directory>
-</VirtualHost>
+    </VirtualHost>
 
-<VirtualHost *:80>
-        ServerName EP.web
-	  ServerAlias client.EP.web
-        DocumentRoot "D:/FGW/Crush/Template/Enterprise_Project/frontend/web"
+
+    <VirtualHost *:80>
+        
+	ServerName EP.web
+	ServerAlias client.EP.web
+        DocumentRoot "<path_to_frontend/web_folder>"
            
-        <Directory "D:/FGW/Crush/Template/Enterprise_Project/frontend/web">
+        <Directory "<path_to_front/web_folder>">
             # use mod_rewrite for pretty URL support
             RewriteEngine on
             # If a directory or a file exists, use the request directly
