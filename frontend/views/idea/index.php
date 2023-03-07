@@ -3,6 +3,7 @@
 use frontend\models\Category;
 use frontend\models\Idea;
 use frontend\models\User;
+use yii\bootstrap4\LinkPager;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -37,9 +38,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         </li>
                         <li class="list-inline-item">
                             <?php
-                                $time = strtotime('10/16/2003');
-                                $date = date('Y-m-d',$time);
-                                echo "$date";
+                            $time = strtotime('10/16/2003');
+                            $date = date('Y-m-d', $time);
+                            echo "$date";
                             ?>
                         </li>
                         <li class="list-inline-item">Category : <a href="#" class="ml-1"><?= Category::find()->where(['=', 'id', $idea->categoryId])->one()->name; ?></a>
@@ -56,7 +57,34 @@ $this->params['breadcrumbs'][] = $this->title;
             No idea found
         </div>
     <?php endif; ?>
-
+    <?= LinkPager::widget(['pagination' => $pages]); ?>
+    <script>
+        $(document).on('ready pjax:success', function() {
+            //your javascript here    
+            $('.post-slider').slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                autoplay: true,
+                dots: false,
+                arrows: true,
+                prevArrow: '<button type=\'button\' class=\'prevArrow\'><i class=\'ti-angle-left\'></i></button>',
+                nextArrow: '<button type=\'button\' class=\'nextArrow\'><i class=\'ti-angle-right\'></i></button>'
+            });
+        });
+    </script>
     <?php Pjax::end(); ?>
-
+    <script>
+        $(document).ready(function() {
+            //your javascript here    
+            $('.post-slider').slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                autoplay: true,
+                dots: false,
+                arrows: true,
+                prevArrow: '<button type=\'button\' class=\'prevArrow\'><i class=\'ti-angle-left\'></i></button>',
+                nextArrow: '<button type=\'button\' class=\'nextArrow\'><i class=\'ti-angle-right\'></i></button>'
+            });
+        });
+    </script>
 </div>

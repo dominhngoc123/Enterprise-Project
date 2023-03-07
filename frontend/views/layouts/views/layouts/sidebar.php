@@ -1,6 +1,11 @@
 <?php
 
+use common\models\constant\StatusConstant;
+use frontend\models\Category;
+use frontend\models\Idea;
+use yii\bootstrap5\ButtonDropdown;
 use yii\helpers\Url;
+
 ?>
 
 <div class="widget">
@@ -15,25 +20,20 @@ use yii\helpers\Url;
    <div class="widget">
       <h5 class="widget-title"><span>Categories</span></h5>
       <ul class="list-unstyled widget-list">
-         <li><a href="#!" class="d-flex">Four seasone
+      <?php $categories = Category::find()->where(['=', 'status', StatusConstant::ACTIVE])->all(); ?>
+      <?php if ($categories): ?>
+         <?php foreach ($categories as $category): ?>
+            <li><a href="#!" class="d-flex"><?= $category->name ?>
                <small class="ml-auto">(1)</small></a>
-         </li>
-         <li><a href="#!" class="d-flex">Newyork city
-               <small class="ml-auto">(2)</small></a>
-         </li>
-         <li><a href="#!" class="d-flex">Photobooth
-               <small class="ml-auto">(1)</small></a>
-         </li>
-         <li><a href="#!" class="d-flex">Photography
-               <small class="ml-auto">(2)</small></a>
-         </li>
-         <li><a href="#!" class="d-flex">Videography
-               <small class="ml-auto">(1)</small></a>
-         </li>
+            </li>
+         <?php endforeach; ?>
+      <?php else: ?>
+         <li><a href="" class="d-flex" style="pointer-events: none !important;">No category found</a></li>
+      <?php endif; ?>
       </ul>
    </div>
    <!-- tags -->
-   <div class="widget">
+   <!-- <div class="widget">
       <h5 class="widget-title"><span>Tags</span></h5>
       <ul class="list-inline widget-list-inline">
          <li class="list-inline-item"><a href="#!">Booth</a>
@@ -51,45 +51,41 @@ use yii\helpers\Url;
          <li class="list-inline-item"><a href="#!">Video</a>
          </li>
       </ul>
-   </div>
+   </div> -->
    <!-- latest post -->
    <div class="widget">
-      <h5 class="widget-title"><span>Latest Article</span></h5>
-      <!-- post-item -->
-      <ul class="list-unstyled widget-list">
+      <?php $lastest_ideas = Idea::find()->where(['=', 'status', StatusConstant::ACTIVE])->orderBy(['created_at' => SORT_DESC])->limit(5)->all(); ?>
+      <h5 class="widget-title"><span>Latest Ideas</span></h5>
+      <?php if ($lastest_ideas): ?>
+         <?php foreach ($lastest_ideas as $lastest_idea): ?>
+            <ul class="list-unstyled widget-list">
+               <li class="media widget-post align-items-center">
+                  <a href="<?= Url::to(['idea/view', 'id' => $lastest_idea->id]); ?>">
+                     <img loading="lazy" class="mr-3" src="../images/post/post-6.jpg">
+                  </a>
+                  <div class="media-body">
+                     <h5 class="h6 mb-0"><a href="<?= Url::to(['idea/view', 'id' => $lastest_idea->id]); ?>"><?= $lastest_idea->title; ?></a></h5>
+                     <small>
+                        <?php
+                           $time = strtotime('10/16/2003');
+                           $date = date('Y-m-d',$time);
+                           echo "$date";
+                        ?>
+                     </small>
+                  </div>
+               </li>
+            </ul>
+         <?php endforeach; ?>
+      <?php else: ?>
+         <ul class="list-unstyled widget-list">
          <li class="media widget-post align-items-center">
             <a href="post-elements.html">
                <img loading="lazy" class="mr-3" src="images/post/post-6.jpg">
             </a>
             <div class="media-body">
-               <h5 class="h6 mb-0"><a href="post-elements.html">Elements That You Can Use To Create A New Post On
-                     This Template.</a></h5>
-               <small>March 15, 2020</small>
+               <h5 class="h6 mb-0"><a style="pointer-events: none !important;">No lastest idea found</a></h5>
             </div>
          </li>
       </ul>
-      <ul class="list-unstyled widget-list">
-         <li class="media widget-post align-items-center">
-            <a href="post-details-1.html">
-               <img loading="lazy" class="mr-3" src="images/post/post-1.jpg">
-            </a>
-            <div class="media-body">
-               <h5 class="h6 mb-0"><a href="post-details-1.html">Cheerful Loving Couple Bakers Drinking Coffee</a>
-               </h5>
-               <small>March 14, 2020</small>
-            </div>
-         </li>
-      </ul>
-      <ul class="list-unstyled widget-list">
-         <li class="media widget-post align-items-center">
-            <a href="post-details-2.html">
-               <img loading="lazy" class="mr-3" src="images/post/post-2.jpg">
-            </a>
-            <div class="media-body">
-               <h5 class="h6 mb-0"><a href="post-details-2.html">Cheerful Loving Couple Bakers Drinking Coffee</a>
-               </h5>
-               <small>March 14, 2020</small>
-            </div>
-         </li>
-      </ul>
+      <?php endif; ?>
    </div>

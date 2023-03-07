@@ -11,6 +11,7 @@ use frontend\models\Reaction;
 use frontend\models\UploadForm;
 use Yii;
 use yii\bootstrap5\Html as Bootstrap5Html;
+use yii\data\Pagination;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -69,9 +70,13 @@ class IdeaController extends Controller
      */
     public function actionIndex()
     {
-        $ideas = Idea::find()->where(['=', 'status', 1])->all();
+        $query = Idea::find()->where(['=', 'status', 1]);
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 2]);
+        $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
         return $this->render('index', [
             'ideas' => $ideas,
+            'pages' => $pages
         ]);
     }
 
