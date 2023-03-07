@@ -9,63 +9,58 @@ Step 2: Download xampp and install composer.
 Step 3: At the end of Apache/Config/httpd.conf, append this configuration:
 
 
-    <VirtualHost *:80>
-
-    ServerName EPbackend.web
-
-    DocumentRoot "<path_to_backend/web_folder>"
+   <VirtualHost *:80>
+        ServerName EP.web
+	  ServerAlias admin.EP.web
+        DocumentRoot "D:/FGW/Crush/Template/Enterprise_Project/backend/web"
            
-    <Directory "<path_to_backend/web_folder>">
-      # use mod_rewrite for pretty URL support
-       RewriteEngine on
-      # If a directory or a file exists, use the request directly
-       RewriteCond %{REQUEST_FILENAME} !-f
-       RewriteCond %{REQUEST_FILENAME} !-d
-      # Otherwise forward the request to index.php
-       RewriteRule . index.php
+        <Directory "D:/FGW/Crush/Template/Enterprise_Project/backend/web">
+            # use mod_rewrite for pretty URL support
+            RewriteEngine on
+            # If a directory or a file exists, use the request directly
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteCond %{REQUEST_FILENAME} !-d
+            # Otherwise forward the request to index.php
+            RewriteRule . index.php
 
-      # use index.php as index file
-       DirectoryIndex index.php
+            # use index.php as index file
+            DirectoryIndex index.php
 
-      # ...other settings...
-      # Apache 2.4
-       Require all granted
+            # ...other settings...
+            # Apache 2.4
+            Require all granted
                
-      ## Apache 2.2
-      # Order allow,deny
-      # Allow from all
-    </Directory>
-
-
+            ## Apache 2.2
+            # Order allow,deny
+            # Allow from all
+        </Directory>
     </VirtualHost>
 
-    <VirtualHost *:80>
-
-    ServerName EPfrontend.web
-
-    DocumentRoot "<path_to_frontend/web_folder>"
+<VirtualHost *:80>
+        ServerName EP.web
+	  ServerAlias client.EP.web
+        DocumentRoot "D:/FGW/Crush/Template/Enterprise_Project/frontend/web"
            
-    <Directory "<path_to_frontend/web_folder>">
-      # use mod_rewrite for pretty URL support
-       RewriteEngine on
-      # If a directory or a file exists, use the request directly
-       RewriteCond %{REQUEST_FILENAME} !-f
-       RewriteCond %{REQUEST_FILENAME} !-d
-      # Otherwise forward the request to index.php
-       RewriteRule . index.php
+        <Directory "D:/FGW/Crush/Template/Enterprise_Project/frontend/web">
+            # use mod_rewrite for pretty URL support
+            RewriteEngine on
+            # If a directory or a file exists, use the request directly
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteCond %{REQUEST_FILENAME} !-d
+            # Otherwise forward the request to index.php
+            RewriteRule . index.php
 
-      # use index.php as index file
-       DirectoryIndex index.php
+            # use index.php as index file
+            DirectoryIndex index.php
 
-      # ...other settings...
-      # Apache 2.4
-       Require all granted
+            # ...other settings...
+            # Apache 2.4
+            Require all granted
                
-      ## Apache 2.2
-      # Order allow,deny
-      # Allow from all
-    </Directory>
-
+            ## Apache 2.2
+            # Order allow,deny
+            # Allow from all
+        </Directory>
     </VirtualHost>
 
 Remember to change the path in configuration to project folders.
