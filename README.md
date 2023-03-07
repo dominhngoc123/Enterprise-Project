@@ -8,33 +8,35 @@ Step 2: Download xampp and install composer.
 
 Step 3: At the end of Apache/Config/httpd.conf, append this configuration:
 
-
-   <VirtualHost *:80>
-        ServerName EP.web
-	  ServerAlias admin.EP.web
-        DocumentRoot "D:/FGW/Crush/Template/Enterprise_Project/backend/web"
+<VirtualHost *:80>
+    
+    ServerName EP.web
+    
+    ServerAlias admin.EP.web
+    
+    DocumentRoot "<path_to_backend/web_folder>"
            
-        <Directory "D:/FGW/Crush/Template/Enterprise_Project/backend/web">
-            # use mod_rewrite for pretty URL support
-            RewriteEngine on
-            # If a directory or a file exists, use the request directly
-            RewriteCond %{REQUEST_FILENAME} !-f
-            RewriteCond %{REQUEST_FILENAME} !-d
-            # Otherwise forward the request to index.php
-            RewriteRule . index.php
+    <Directory "<path_to_backend/web_folder>">
+        # use mod_rewrite for pretty URL support
+        RewriteEngine on
+        # If a directory or a file exists, use the request directly
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        # Otherwise forward the request to index.php
+        RewriteRule . index.php
 
-            # use index.php as index file
-            DirectoryIndex index.php
+        # use index.php as index file
+        DirectoryIndex index.php
 
-            # ...other settings...
-            # Apache 2.4
-            Require all granted
-               
-            ## Apache 2.2
-            # Order allow,deny
-            # Allow from all
-        </Directory>
-    </VirtualHost>
+        # ...other settings...
+        # Apache 2.4
+        Require all granted
+              
+        ## Apache 2.2
+        # Order allow,deny
+        # Allow from all
+    </Directory>
+</VirtualHost>
 
 <VirtualHost *:80>
         ServerName EP.web
