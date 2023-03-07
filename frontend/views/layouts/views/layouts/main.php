@@ -91,6 +91,7 @@ $this->registerJsFile($publishedRes[1] . '/control_sidebar.js', ['depends' => '\
 
 
     <?= $this->render('profile-modal') ?>
+    <?= $this->render('terms-conditions') ?>
     
     <!-- /.content-wrapper -->
     <!-- Main Footer -->

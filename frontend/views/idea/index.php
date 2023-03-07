@@ -3,6 +3,7 @@
 use frontend\models\Category;
 use frontend\models\Idea;
 use frontend\models\User;
+use yii\bootstrap4\LinkPager;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -35,14 +36,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     <ul class="list-inline post-meta mb-2">
                         <li class="list-inline-item"><i class="ti-user mr-2"></i><a href="author.html"><?= User::find()->where(['=', 'id', $idea->userId])->one()->full_name; ?></a>
                         </li>
-                        <li class="list-inline-item">
+                        <li class="list-inline-item">Posted at:
                             <?php
-                                $time = strtotime('10/16/2003');
-                                $date = date('Y-m-d',$time);
-                                echo "$date";
+                            $posted_at = strtotime($idea->created_at);
+                            $date = date('Y-m-d', $posted_at);
+                            $time = date('H:m', $posted_at);
+                            echo "$date $time";
                             ?>
                         </li>
-                        <li class="list-inline-item">Category : <a href="#" class="ml-1"><?= Category::find()->where(['=', 'id', $idea->categoryId])->one()->name; ?></a>
+                        <li class="list-inline-item">Category : <a href="<?= Url::to(['idea/get-ideas-by-category', 'categoryId' => $idea->categoryId]); ?>" class="ml-1"><?= Category::find()->where(['=', 'id', $idea->categoryId])->one()->name; ?></a>
                         </li>
                     </ul>
                     <div class="snip_text mb-10"><?= htmlspecialchars_decode(stripslashes($idea->content)); ?></div>
@@ -56,7 +58,34 @@ $this->params['breadcrumbs'][] = $this->title;
             No idea found
         </div>
     <?php endif; ?>
-
+    <?= LinkPager::widget(['pagination' => $pages]); ?>
+    <script>
+        $(document).on('ready pjax:success', function() {
+            //your javascript here    
+            $('.post-slider').slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                autoplay: true,
+                dots: false,
+                arrows: true,
+                prevArrow: '<button type=\'button\' class=\'prevArrow\'><i class=\'ti-angle-left\'></i></button>',
+                nextArrow: '<button type=\'button\' class=\'nextArrow\'><i class=\'ti-angle-right\'></i></button>'
+            });
+        });
+    </script>
     <?php Pjax::end(); ?>
-
+    <script>
+        $(document).ready(function() {
+            //your javascript here    
+            $('.post-slider').slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                autoplay: true,
+                dots: false,
+                arrows: true,
+                prevArrow: '<button type=\'button\' class=\'prevArrow\'><i class=\'ti-angle-left\'></i></button>',
+                nextArrow: '<button type=\'button\' class=\'nextArrow\'><i class=\'ti-angle-right\'></i></button>'
+            });
+        });
+    </script>
 </div>
