@@ -79,9 +79,6 @@ use yii\helpers\Url;
       <?php else: ?>
          <ul class="list-unstyled widget-list">
          <li class="media widget-post align-items-center">
-            <a href="post-elements.html">
-               <img loading="lazy" class="mr-3" src="images/post/post-6.jpg">
-            </a>
             <div class="media-body">
                <h5 class="h6 mb-0"><a style="pointer-events: none !important;">No lastest idea found</a></h5>
             </div>

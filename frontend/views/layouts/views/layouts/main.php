@@ -5,6 +5,7 @@
 
 use yii\helpers\Html;
 use yii\bootstrap4\Breadcrumbs;
+use yii\helpers\Url;
 
 \hail812\adminlte3\assets\FontAwesomeAsset::register($this);
 \hail812\adminlte3\assets\AdminLteAsset::register($this);
@@ -96,7 +97,7 @@ $this->registerJsFile($publishedRes[1] . '/control_sidebar.js', ['depends' => '\
     <!-- /.content-wrapper -->
     <!-- Main Footer -->
     <?= $this->render('footer') ?>
-    <a class="fixedbutton" href="/index.php?r=idea%2Fcreate"><i class="fa fa-plus" aria-hidden="true"></i></a>
+    <a class="fixedbutton" href="<?= Url::to(['idea/create']) ?>"><i class="fa fa-plus" aria-hidden="true"></i></a>
 
     <?php $this->endBody() ?>
     <!-- JS Plugins -->

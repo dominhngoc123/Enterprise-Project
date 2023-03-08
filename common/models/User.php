@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\models\constant\StatusConstant;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -84,6 +85,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             $this->updated_at = new \yii\db\Expression('NOW()');
             $this->updated_by = Yii::$app->user->identity->username;
         }
+        $this->password = Yii::$app->security->generatePasswordHash($this->password);
         $this->status = 1;
         return parent::beforeSave($insert);
     }
@@ -148,7 +150,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $id, 'status' => StatusConstant::ACTIVE]);
     }
 
     /**
@@ -167,7 +169,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username, 'status' => StatusConstant::ACTIVE]);
     }
 
     /**

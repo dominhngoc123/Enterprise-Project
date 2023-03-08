@@ -1,10 +1,11 @@
 <?php
 
-namespace common\fixtures;
+namespace common\fixtures;;
 
 use yii\test\ActiveFixture;
 
 class UserFixture extends ActiveFixture
 {
-    public $modelClass = 'common\models\User';
+    public $modelClass = 'backend\models\User';
+    public $dataFile = '@tests/fixtures/data/user.php';
 }
