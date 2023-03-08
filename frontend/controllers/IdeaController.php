@@ -71,7 +71,7 @@ class IdeaController extends Controller
      */
     public function actionIndex()
     {
-        $query = Idea::find()->where(['=', 'status', 1]);
+        $query = Idea::find()->where(['=', 'status', 1])->andWhere(['parentId' => NULL]);
         $countQuery = clone $query;
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 2]);
         $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
