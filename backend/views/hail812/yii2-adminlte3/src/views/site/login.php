@@ -9,7 +9,7 @@ use yii\helpers\Html;
             <div class="col-md-6">
                 <img src="../images/undraw_remotely_2j6y.svg" alt="Image" class="img-fluid">
             </div>
-            <div class="col-md-6 contents justify-content-center">
+            <div class="col-md-6 contents justify-content-center card">
                 <div class="row justify-content-center">
                     <div class="col-md-8">
                         <div class="mb-4">

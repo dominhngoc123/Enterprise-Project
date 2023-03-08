@@ -1,8 +1,10 @@
 <?php
 
 use common\models\constant\ReactionTypeConstant;
+use common\models\constant\StatusConstant;
 use frontend\models\Category;
 use frontend\models\User;
+use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
@@ -41,31 +43,40 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= htmlspecialchars_decode(stripslashes($model->content)); ?>
                     </div>
                     <div class="line-divider"></div>
-                        <div class="reaction">
-                            <a href="<?= Url::to(['reaction/react-idea', 'ideaId' => $model->id, 'reactionType' => ReactionTypeConstant::LIKE]); ?>" class="btn text-green <?php if ($reaction && $reaction->status == ReactionTypeConstant::LIKE) { echo 'disabled'; } ?>" id="like_btn"><i class="fa fa-thumbs-up"></i>&nbsp;&nbsp;<span id="like_count"><?= $model->upvote_count ?></span></a>
-                            <a href="<?= Url::to(['reaction/react-idea', 'ideaId' => $model->id, 'reactionType' => ReactionTypeConstant::UNLIKE]); ?>" class="btn text-red <?php if ($reaction && $reaction->status == ReactionTypeConstant::UNLIKE) { echo 'disabled'; } ?>" id="unlike_btn"><i class="fa fa-thumbs-down"></i>&nbsp;&nbsp;<span id="dislike_count"><?= $model->downvote_count ?></span></a>
-                        </div>
-                    <div class="post-comment">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" class="profile-photo-sm">
-                        <p><a href="timeline.html" class="profile-link">Diana </a><i class="em em-laughing"></i> Lorem ipsum dolor sit
-                            amet, consectetur adipiscing elit, sed do eiusmod tempor
-                            incididunt ut labore et dolore magna aliqua. Ut enim ad
-                            minim veniam, quis nostrud </p>
+                    <div class="reaction">
+                        <a href="<?= Url::to(['reaction/react-idea', 'ideaId' => $model->id, 'reactionType' => ReactionTypeConstant::LIKE]); ?>" class="btn text-green <?php if ($reaction && $reaction->status == ReactionTypeConstant::LIKE) {
+                                                                                                                                                                            echo 'disabled';
+                                                                                                                                                                        } ?>" id="like_btn"><i class="fa fa-thumbs-up"></i>&nbsp;&nbsp;<span id="like_count"><?= $model->upvote_count ?></span></a>
+                        <a href="<?= Url::to(['reaction/react-idea', 'ideaId' => $model->id, 'reactionType' => ReactionTypeConstant::UNLIKE]); ?>" class="btn text-red <?php if ($reaction && $reaction->status == ReactionTypeConstant::UNLIKE) {
+                                                                                                                                                                            echo 'disabled';
+                                                                                                                                                                        } ?>" id="unlike_btn"><i class="fa fa-thumbs-down"></i>&nbsp;&nbsp;<span id="dislike_count"><?= $model->downvote_count ?></span></a>
                     </div>
+                    <?php if ($comments) : ?>
+                        <?php foreach ($comments as $comment) : ?>
+                            <?php
+                                $user = User::find()->where(['=', 'id', $comment->userId])->one(); 
+                            ?>
+                            <div class="post-comment">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="<?= $user->full_name ?>" class="profile-photo-sm">
+                                <p><?= $comment->content; ?></p>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    <?php $form = ActiveForm::begin([
+                        'id' => 'create-comment-form',
+                        'action' => URL::to(['idea/comment', 'ideaId' => $model->id])
+                    ]); ?>
                     <div class="post-comment">
                         <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="profile-photo-sm">
-                        <p><a href="timeline.html" class="profile-link">John</a>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                            sed do eiusmod tempor incididunt ut labore et dolore
-                            magna aliqua. Ut enim ad minim veniam, quis nostrud </p>
+                        <?= $form->field($new_comment, 'content', [
+                            'options' => ['class' => 'w-100']
+                        ])->textInput(['class' => 'form-control', 'placeholder' => 'Post a comment'])->label(false) ?>
                     </div>
-                    <div class="post-comment">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="profile-photo-sm">
-                        <input type="text" class="form-control" placeholder="Post a comment">
-                    </div>
+                    <?php $form = ActiveForm::end(); ?>
                 </div>
             </article>
         </div>
     </section>
 </div>
+
 <?php Pjax::end() ?>

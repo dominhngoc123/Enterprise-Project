@@ -67,10 +67,7 @@ class ReactionController extends Controller
             $reaction->save();
             $this->updateIdeaReactionCount($ideaId, $reactionType);
         }
-        return $this->render('../idea/view', [
-            'model' => Idea::findOne($ideaId),
-            'reaction' => $reaction
-        ]);
+        return $this->redirect(['../idea/view', 'id' => $ideaId]);
     }
 
     private function updateIdeaReactionCount($ideaId, $reactionType)

@@ -89,10 +89,14 @@ class IdeaController extends Controller
      */
     public function actionView($id)
     {
+        $new_comment = new Idea();
         $reaction = Reaction::find()->where(['=', 'userId', Yii::$app->user->identity->id])->andWhere(['=', 'ideaId', $id])->one();
+        $comments = Idea::find()->where(['=',  'parentId', $id])->andWhere(['=', 'status', StatusConstant::ACTIVE])->all();
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'reaction' => $reaction
+            'reaction' => $reaction,
+            'new_comment' => $new_comment,
+            'comments' => $comments
         ]);
     }
 
@@ -111,7 +115,6 @@ class IdeaController extends Controller
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
                 $model->parentId = null;
-                $model->userId = Yii::$app->user->identity->id;
                 $model->upvote_count = 0;
                 $model->downvote_count = 0;
                 $files = UploadedFile::getInstances($model, 'file');
@@ -147,6 +150,31 @@ class IdeaController extends Controller
         ]);
     }
 
+    public function actionComment($ideaId)
+    {
+        $comment = new Idea();
+        if ($this->request->isPost)
+        {
+            if ($comment->load($this->request->post())) {
+                $comment-> title = null;
+                $comment->parentId = $ideaId;
+                $comment->categoryId = null;
+                $comment->campaignId = null;
+                $comment->upvote_count = 0;
+                $comment->downvote_count = 0;
+                if ($comment->save())
+                {
+                    Yii::$app->session->setFlash('success', 'Create new comment success');
+                }
+                else
+                {
+                    Yii::$app->session->setFlash('error', 'Cannot create new comment');
+                }
+            }
+        }
+        return $this->redirect(['view', 'id' => $ideaId]);
+    }
+
     /**
      * Updates an existing Idea model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -171,7 +199,6 @@ class IdeaController extends Controller
         }
         if ($this->request->isPost && $model->load($this->request->post())) {
             $model->parentId = null;
-            $model->userId = Yii::$app->user->identity->id;
             $model->upvote_count = 0;
             $model->downvote_count = 0;
             $removed_id = array();

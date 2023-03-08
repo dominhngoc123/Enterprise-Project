@@ -90,6 +90,7 @@ class Idea extends \yii\db\ActiveRecord
         if ($this->isNewRecord) {
             $this->created_at = new \yii\db\Expression('NOW()');
             $this->created_by = Yii::$app->user->identity->username;
+            $this->userId = Yii::$app->user->identity->id;
             $this->status = 1;
         } else {
             $this->updated_at = new \yii\db\Expression('NOW()');
