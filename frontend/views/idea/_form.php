@@ -14,7 +14,6 @@ use kartik\switchinput\SwitchInput;
 
 <div class="container">
     <div class="row idea-form">
-        <h1>Create post</h1>
         <?php $form = ActiveForm::begin(); ?>
         <div class="row">
             <div class="col col-md-6 col-lg-6 col-sm-12">
@@ -97,7 +96,7 @@ use kartik\switchinput\SwitchInput;
             </div>
         </div>
         <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Post idea'), ['class' => 'btn btn-success', 'style' => ['width' => '100%']]) ?>
+        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'style' => ['width' => '100%']]) ?>
     </div>
     <?php ActiveForm::end(); ?>
 

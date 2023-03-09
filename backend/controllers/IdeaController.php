@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\helpers\DownloadHelper;
 use backend\models\Campaign;
 use backend\models\Attachment;
 use backend\models\Category;
@@ -14,6 +15,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
@@ -106,14 +108,15 @@ class IdeaController extends Controller
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
                 $model->parentId = null;
-                $model->userId = Yii::$app->user->identity->id;
                 $model->upvote_count = 0;
                 $model->downvote_count = 0;
                 $files = UploadedFile::getInstances($model, 'file');
                 $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
                 $model->save();
+                $folder_name = 'idea_' . time();
+                FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
                 foreach ($files as $file) {
-                    $url = 'uploads/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                    $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
                     $file->saveAs($url);
                     $attachment = new Attachment();
                     $attachment->url = $url;
@@ -142,6 +145,27 @@ class IdeaController extends Controller
         ]);
     }
 
+    public function actionComment($ideaId)
+    {
+        $comment = new Idea();
+        if ($this->request->isPost) {
+            if ($comment->load($this->request->post())) {
+                $comment->title = null;
+                $comment->parentId = $ideaId;
+                $comment->categoryId = null;
+                $comment->campaignId = null;
+                $comment->upvote_count = 0;
+                $comment->downvote_count = 0;
+                if ($comment->save()) {
+                    Yii::$app->session->setFlash('success', 'Create new comment success');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Cannot create new comment');
+                }
+            }
+        }
+        return $this->redirect(['view', 'id' => $ideaId]);
+    }
+
     /**
      * Updates an existing Idea model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -156,7 +180,9 @@ class IdeaController extends Controller
         $files_type = array();
         $model = $this->findModel($id);
         $uploaded_file = Attachment::find()->where(['=', 'ideaId', $model->id])->all();
+        $folder_url = "";
         if ($uploaded_file) {
+            $folder_url = substr(end($uploaded_file)->url, 0, strripos(end($uploaded_file)->url, '/'));
             foreach ($uploaded_file as $file) {
                 $all_files[] = Url::base(TRUE) . "/" . $file->url;
                 $obj = (object) array('caption' => $file->original_name, 'url' => "/index.php?r=idea%2Fdelete-file&id=$file->id", 'key' => $file->id, 'type' => $file->file_type);
@@ -166,12 +192,10 @@ class IdeaController extends Controller
         }
         if ($this->request->isPost && $model->load($this->request->post())) {
             $model->parentId = null;
-            $model->userId = Yii::$app->user->identity->id;
             $model->upvote_count = 0;
             $model->downvote_count = 0;
             $removed_id = array();
-            foreach ($uploaded_file as $file)
-            {
+            foreach ($uploaded_file as $file) {
                 $removed_id[] = $file->id;
             }
             $this->deleteFiles($removed_id);
@@ -179,7 +203,13 @@ class IdeaController extends Controller
             $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
             $model->save();
             foreach ($files as $file) {
-                $url = 'uploads/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                if ($folder_url != '' && file_exists($folder_url)) {
+                    $url = $folder_url . '/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                } else {
+                    $folder_name = 'idea_' . time();
+                    FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
+                    $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                }
                 $file->saveAs($url);
                 $attachment = new Attachment();
                 $attachment->url = $url;
@@ -191,7 +221,7 @@ class IdeaController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
         $category = Category::find()->where(['status' => 1])->all();
-        $Campaign = Campaign::find()->where(['status' => 1])->all();
+        $campaign = Campaign::find()->where(['status' => 1])->all();
 
         return $this->render('update', [
             'all_files' => $all_files,
@@ -199,7 +229,7 @@ class IdeaController extends Controller
             'files_type' => $files_type,
             'model' => $model,
             'category' => ArrayHelper::map($category, 'id', 'name'),
-            'campaign' => ArrayHelper::map($Campaign, 'id', 'name'),
+            'campaign' => ArrayHelper::map($campaign, 'id', 'name'),
             'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
         ]);
     }
@@ -215,14 +245,41 @@ class IdeaController extends Controller
 
     public function deleteFiles($id)
     {
-        $urls = Attachment::find()->select(['url'])->where(['IN', 'id', $id])->asArray()->all();
-        $check = Attachment::deleteAll(['IN', 'id', $id]);
-        if ($check) {
-            foreach($urls as $url)
-            {
-                unlink($url->url);
+        $url = Attachment::find()->select(['url'])->where(['IN', 'id', $id])->one();
+        if ($url) {
+            $folder_url = substr($url->url, 0, strripos($url->url, '/'));
+            $check = Attachment::deleteAll(['ideaId' => $id]);
+            if ($check && is_dir($folder_url)) {
+                $this->rmdir_recursive($folder_url);
             }
         }
+    }
+
+    public function deleteFilesOfIdea($id)
+    {
+        $url = Attachment::find()->select(['url'])->where(['=', 'ideaId', $id])->one();
+        if ($url) {
+            $folder_url = substr($url->url, 0, strripos($url->url, '/'));
+            $check = Attachment::deleteAll(['ideaId' => $id]);
+            if ($check && is_dir($folder_url)) {
+                $this->rmdir_recursive($folder_url);
+            }
+        }
+    }
+
+    function rmdir_recursive($dir)
+    {
+        foreach (scandir($dir) as $file) {
+            if ('.' === $file || '..' === $file) continue;
+            if (is_dir("$dir/$file")) $this->rmdir_recursive("$dir/$file");
+            else unlink("$dir/$file");
+        }
+        rmdir($dir);
+    }
+
+    public function actionDownloadZip()
+    {
+        DownloadHelper::DownloadZipFiles();
     }
 
     /**
@@ -234,8 +291,18 @@ class IdeaController extends Controller
      */
     public function actionDelete($id)
     {
+        $this->deleteFilesOfIdea($id);
+        \Yii::$app
+            ->db
+            ->createCommand()
+            ->delete('idea', ['parentId' => $id])
+            ->execute();
+        \Yii::$app
+            ->db
+            ->createCommand()
+            ->delete('reaction', ['ideaId' => $id])
+            ->execute();
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 

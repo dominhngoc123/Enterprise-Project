@@ -2,6 +2,8 @@
 
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
+
+$this->title = Yii::t('app', 'Admin sign in');
 ?>
 <div class="content">
     <div class="container">

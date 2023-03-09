@@ -24,7 +24,7 @@ use yii\helpers\Url;
       <?php if ($categories): ?>
          <?php foreach ($categories as $category): ?>
             <li><a href="<?= Url::to(['idea/get-ideas-by-category', 'categoryId' => $category->id]); ?>" class="d-flex"><?= $category->name ?>
-               <small class="ml-auto">(1)</small></a>
+               <small class="ml-auto">(<?= Idea::find()->where(['=', 'categoryId', $category->id])->count(); ?>)</small></a>
             </li>
          <?php endforeach; ?>
       <?php else: ?>
@@ -54,7 +54,7 @@ use yii\helpers\Url;
    </div> -->
    <!-- latest post -->
    <div class="widget">
-      <?php $lastest_ideas = Idea::find()->where(['=', 'status', StatusConstant::ACTIVE])->orderBy(['created_at' => SORT_DESC])->limit(5)->all(); ?>
+      <?php $lastest_ideas = Idea::find()->where(['=', 'status', StatusConstant::ACTIVE])->andWhere(['parentId' => NUll])->orderBy(['created_at' => SORT_DESC])->limit(5)->all(); ?>
       <h5 class="widget-title"><span>Latest Ideas</span></h5>
       <?php if ($lastest_ideas): ?>
          <?php foreach ($lastest_ideas as $lastest_idea): ?>

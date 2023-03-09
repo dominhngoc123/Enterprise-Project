@@ -15,12 +15,14 @@ use yii\widgets\Pjax;
 $this->title = Yii::t('app', 'Ideas');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+</style>
 <div class="idea-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a(Yii::t('app', 'Create Idea'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('<i class="fa fa-download"></i> Download attachments', ['idea/download-zip'], ['class' => 'btn btn-success', 'title' => 'Download attachments']) ?>
     </p>
 
     <?php Pjax::begin(); ?>

@@ -12,7 +12,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Ideas'), 'url' => ['
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 ?>
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'all_files' => $all_files,

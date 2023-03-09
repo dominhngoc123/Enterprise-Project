@@ -21,6 +21,25 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php Pjax::begin(['enablePushState' => false]) ?>
 <div class="idea-view">
     <section class="section post-content">
+        <?php if (Yii::$app->user->identity->id == $model->userId): ?>
+        <div id="menu-wrap">
+            <input type="checkbox" class="toggler" />
+            <div class="dots">
+                <div></div>
+            </div>
+            <div class="menu">
+                <div>
+                    <ul>
+                        <li><a href="<?= Url::to(['idea/update', 'id' => $model->id]); ?>" class="link"><i class="fas fa-edit"></i> Update</a></li>
+                        <li><?= Html::a('<i class="fas fa-trash"></i> Delete', ['idea/delete', 'id' => $model->id], ['data' => [
+                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                'method' => 'post',
+            ],]) ?></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
         <div class="container post-container">
             <article class="row mb-4">
                 <div class="col-lg-10 mx-auto mb-4">
@@ -30,9 +49,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         </li>
                         <li class="list-inline-item">Date :
                             <?php
-                            $time = strtotime('10/16/2003');
-                            $date = date('Y-m-d', $time);
-                            echo "$date";
+                            $posted_at = strtotime($model->created_at);
+                            $date = date('Y-m-d', $posted_at);
+                            $time = date('H:m', $posted_at);
+                            echo "$date $time";
                             ?></li>
                         <li class="list-inline-item">Categories : <a href="#!" class="ml-1"><?= Category::find()->where(['=', 'id', $model->categoryId])->one()->name; ?></a>
                         </li>
@@ -54,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php if ($comments) : ?>
                         <?php foreach ($comments as $comment) : ?>
                             <?php
-                                $user = User::find()->where(['=', 'id', $comment->userId])->one(); 
+                            $user = User::find()->where(['=', 'id', $comment->userId])->one();
                             ?>
                             <div class="post-comment">
                                 <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="<?= $user->full_name ?>" class="profile-photo-sm">
