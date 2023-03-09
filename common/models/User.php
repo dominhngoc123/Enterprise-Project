@@ -79,6 +79,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function beforeSave($insert) {
 
         if ($this->isNewRecord) {
+            $this->auth_key = \Yii::$app->security->generateRandomString();
             $this->created_at = new \yii\db\Expression('NOW()');
             $this->created_by = Yii::$app->user->identity->username;
         } else {

@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use backend\helpers\DownloadHelper;
+use common\models\constant\ConfigParams;
 use common\models\constant\StatusConstant;
 use frontend\models\Campaign;
 use frontend\models\Attachment;
@@ -11,6 +12,7 @@ use frontend\models\Idea;
 use frontend\models\IdeaSearch;
 use frontend\models\Reaction;
 use frontend\models\UploadForm;
+use frontend\models\User;
 use Yii;
 use yii\bootstrap5\Html as Bootstrap5Html;
 use yii\data\Pagination;
@@ -326,6 +328,11 @@ class IdeaController extends Controller
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 
+    private function sendEmailToCoordinator($idea)
+    {
+        $send_from = ConfigParams::SMTP_EMAIL;
+    }
+
     public function actionGetIdeasByCategory($categoryId)
     {
         $query = Idea::find()->where(['=', 'categoryId', $categoryId])->andWhere(['=', 'status', StatusConstant::ACTIVE]);
@@ -337,7 +344,7 @@ class IdeaController extends Controller
             'pages' => $pages
         ]);
     }
-    
+
     private function getFileType($extension)
     {
         $extension = "." . $extension;

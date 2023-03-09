@@ -86,6 +86,7 @@ class m130524_201442_init extends Migration
             'content' => $this->text(),
             'parentId' => $this->integer(),
             'userId' => $this->integer(),
+            'departmentId' => $this->integer(),
             'categoryId' => $this->integer(),
             'campaignId' => $this->integer(),
             'upvote_count' => $this->integer(),
@@ -110,6 +111,7 @@ class m130524_201442_init extends Migration
         $this->addForeignKey('FK_user_department', 'user', 'departmentId', 'department', 'id');
         $this->addForeignKey('FK_idea_idea', 'idea', 'parentId', 'idea', 'id');
         $this->addForeignKey('FK_idea_user', 'idea', 'userId', 'user', 'id');
+        $this->addForeignKey('FK_idea_department', 'idea', 'departmentId', 'department', 'id');
         $this->addForeignKey('FK_attachment_idea', 'attachment', 'ideaId', 'idea', 'id');
         $this->addForeignKey('FK_user_category', 'idea', 'categoryId', 'category', 'id');
         $this->addForeignKey('FK_idea_campaign', 'idea', 'campaignId', 'campaign', 'id');

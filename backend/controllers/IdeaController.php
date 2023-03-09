@@ -2,13 +2,14 @@
 
 namespace backend\controllers;
 
-use backend\helpers\DownloadHelper;
+use common\helpers\DownloadHelper;
 use backend\models\Campaign;
 use backend\models\Attachment;
 use backend\models\Category;
 use backend\models\Idea;
 use backend\models\IdeaSearch;
 use backend\models\UploadForm;
+use common\helpers\EmailHelper;
 use Yii;
 use yii\bootstrap5\Html as Bootstrap5Html;
 use yii\web\Controller;

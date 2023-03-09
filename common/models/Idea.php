@@ -14,6 +14,7 @@ use Yii;
  * @property int|null $userId
  * @property int|null $categoryId
  * @property int|null $campaignId
+ * @property int|null $departmentId
  * @property int|null $upvote_count
  * @property int|null $downvote_count
  * @property int|null $post_type
@@ -24,6 +25,7 @@ use Yii;
  * @property string|null $updated_by
  *
  * @property Campaign $campaign
+ * @property Campaign $department
  * @property Attachment[] $attachments
  * @property Category $category
  * @property Idea[] $ideas
@@ -107,6 +109,16 @@ class Idea extends \yii\db\ActiveRecord
     public function getCampaign()
     {
         return $this->hasOne(Campaign::class, ['id' => 'campaignId']);
+    }
+
+    /**
+     * Gets query for [[department]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDepartment()
+    {
+        return $this->hasOne(Department::class, ['id' => 'departmentId']);
     }
 
     /**
