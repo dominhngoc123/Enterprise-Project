@@ -6,10 +6,12 @@ use common\helpers\DownloadHelper;
 use backend\models\Campaign;
 use backend\models\Attachment;
 use backend\models\Category;
+use backend\models\Department;
 use backend\models\Idea;
 use backend\models\IdeaSearch;
 use backend\models\UploadForm;
 use common\helpers\EmailHelper;
+use common\models\constant\StatusConstant;
 use Yii;
 use yii\bootstrap5\Html as Bootstrap5Html;
 use yii\web\Controller;
@@ -114,6 +116,7 @@ class IdeaController extends Controller
                 $files = UploadedFile::getInstances($model, 'file');
                 $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
                 $model->save();
+                EmailHelper::emailWhenSubmitIdea($model);
                 $folder_name = 'idea_' . time();
                 FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
                 foreach ($files as $file) {
@@ -132,8 +135,9 @@ class IdeaController extends Controller
             $model->loadDefaultValues();
         }
 
-        $category = Category::find()->where(['status' => 1])->all();
-        $campaign = Campaign::find()->where(['status' => 1])->all();
+        $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
+        $campaign = Campaign::find()->where(['status' => StatusConstant::ACTIVE])->all();
+        $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
 
         return $this->render('create', [
             'all_files' => $all_files,
@@ -142,6 +146,7 @@ class IdeaController extends Controller
             'model' => $model,
             'category' => ArrayHelper::map($category, 'id', 'name'),
             'campaign' => ArrayHelper::map($campaign, 'id', 'name'),
+            'department' => ArrayHelper::map($department, 'id', 'name'),
             'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
         ]);
     }
@@ -221,8 +226,9 @@ class IdeaController extends Controller
             }
             return $this->redirect(['view', 'id' => $model->id]);
         }
-        $category = Category::find()->where(['status' => 1])->all();
-        $campaign = Campaign::find()->where(['status' => 1])->all();
+        $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
+        $campaign = Campaign::find()->where(['status' => StatusConstant::ACTIVE])->all();
+        $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
 
         return $this->render('update', [
             'all_files' => $all_files,
@@ -231,6 +237,7 @@ class IdeaController extends Controller
             'model' => $model,
             'category' => ArrayHelper::map($category, 'id', 'name'),
             'campaign' => ArrayHelper::map($campaign, 'id', 'name'),
+            'department' => ArrayHelper::map($department, 'id', 'name'),
             'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
         ]);
     }

@@ -22,7 +22,7 @@ use yii\helpers\Url;
                 'data' => $category,
                 'options' => ['placeholder' => 'Select a category ...'],
                 'pluginOptions' => [
-                    'allowClear' => true
+                    'allowClear' => false
                 ],
             ]) ?>
         </div>
@@ -31,7 +31,27 @@ use yii\helpers\Url;
                 'data' => $campaign,
                 'options' => ['placeholder' => 'Select an campaign ...'],
                 'pluginOptions' => [
-                    'allowClear' => true
+                    'allowClear' => false
+                ],
+            ]) ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-md-6 col-lg-6 col-sm-12">
+            <?= $form->field($model, 'departmentId')->widget(Select2::classname(), [
+                'data' => $department,
+                'options' => ['placeholder' => 'Select an campaign ...'],
+                'pluginOptions' => [
+                    'allowClear' => false
+                ],
+            ]) ?>
+        </div>
+        <div class="col col-md-6 col-lg-6 col-sm-12">
+            <?= $form->field($model, 'post_type')->widget(Select2::classname(), [
+                'data' => $ideaType,
+                'options' => ['placeholder' => 'Select an idea type ...'],
+                'pluginOptions' => [
+                    'allowClear' => false
                 ],
             ]) ?>
         </div>
@@ -90,15 +110,6 @@ use yii\helpers\Url;
                     'showRemove' => TRUE,
                 ]
             ]); ?>
-        </div>
-        <div class="col col-md-12 col-lg-12 col-sm-12">
-            <?= $form->field($model, 'post_type')->widget(Select2::classname(), [
-                'data' => $ideaType,
-                'options' => ['placeholder' => 'Select an idea type ...'],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]) ?>
         </div>
     </div>
 

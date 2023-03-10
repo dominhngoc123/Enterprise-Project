@@ -35,6 +35,21 @@ use kartik\switchinput\SwitchInput;
                 ]) ?>
             </div>
         </div>
+        <div class="row">
+            <div class="col col-md-6 col-lg-6 col-sm-12">
+                <?= $form->field($model, 'departmentId')->widget(Select2::classname(), [
+                    'data' => $department,
+                    'options' => ['placeholder' => 'Select an campaign ...'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]) ?>
+            </div>
+            <div class="col col-md-6 col-lg-6 col-sm-12">
+                <label class="control-label">Anonymous</label>
+                <?= $form->field($model, 'post_type')->widget(SwitchInput::classname(), [])->label(false); ?>
+            </div>
+        </div>
 
         <?= $form->field($model, 'title')->textarea(['rows' => 4]) ?>
 
@@ -90,16 +105,13 @@ use kartik\switchinput\SwitchInput;
                     ]
                 ]); ?>
             </div>
-            <div class="col col-md-12 col-lg-12 col-sm-12">
-                <label class="control-label">Anonymous</label>
-                <?= $form->field($model, 'post_type')->widget(SwitchInput::classname(), [])->label(false); ?>
-            </div>
+
         </div>
         <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'style' => ['width' => '100%']]) ?>
+            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'style' => ['width' => '100%']]) ?>
+        </div>
+        <?php ActiveForm::end(); ?>
+
+
     </div>
-    <?php ActiveForm::end(); ?>
-
-
-</div>
 </div>

@@ -59,6 +59,7 @@ class Idea extends \yii\db\ActiveRecord
             [['parentId'], 'exist', 'skipOnError' => true, 'targetClass' => Idea::class, 'targetAttribute' => ['parentId' => 'id']],
             [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['userId' => 'id']],
             [['categoryId'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['categoryId' => 'id']],
+            [['departmentId'], 'exist', 'skipOnError' => true, 'targetClass' => Department::class, 'targetAttribute' => ['departmentId' => 'id']],
             [['file'], 'file', 'maxFiles' => 0],
         ];
     }
@@ -75,6 +76,7 @@ class Idea extends \yii\db\ActiveRecord
             'parentId' => Yii::t('app', 'Parent ID'),
             'userId' => Yii::t('app', 'User ID'),
             'categoryId' => Yii::t('app', 'Category ID'),
+            'departmentId' => Yii::t('app', 'Department ID'),
             'campaignId' => Yii::t('app', 'Campaign ID'),
             'upvote_count' => Yii::t('app', 'Upvote Count'),
             'downvote_count' => Yii::t('app', 'Downvote Count'),

@@ -37,6 +37,7 @@ class DownloadHelper
         $zip->close();
         if (file_exists($zipUrl)) {
             \Yii::$app->response->sendFile($zipUrl)->send();
+            unlink($zipUrl);
         }
     }
 }
