@@ -2,12 +2,15 @@
 
 namespace backend\controllers;
 
+use backend\models\Department;
 use backend\models\User;
 use backend\models\UserSearch;
+use common\models\constant\StatusConstant;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -26,6 +29,15 @@ class UserController extends Controller
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                    ],
+                ],
+                'access' => [
+                    'class' => \yii\filters\AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
                     ],
                 ],
             ]
@@ -57,7 +69,7 @@ class UserController extends Controller
     public function actionView($id)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $this->findModel($id)
         ]);
     }
 
@@ -69,7 +81,7 @@ class UserController extends Controller
     public function actionCreate()
     {
         $model = new User();
-
+        $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);              
@@ -80,6 +92,7 @@ class UserController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'department' => ArrayHelper::map($department, 'id', 'name'),
         ]);
     }
 
@@ -92,6 +105,7 @@ class UserController extends Controller
      */
     public function actionUpdate($id)
     {
+        $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
@@ -100,6 +114,7 @@ class UserController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'department' => ArrayHelper::map($department, 'id', 'name'),
         ]);
     }
 

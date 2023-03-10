@@ -1,5 +1,7 @@
 <?php
 
+use kartik\date\DatePicker;
+use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -20,11 +22,27 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'dob')->textInput(['maxlength' => true]) ?>
+    <div class="row">
+        <div class="col col-md-6 col-lg-6 col-sm-12">
+            <?= $form->field($model, 'dob')->widget(DatePicker::classname(), [
+                'pluginOptions' => [
+                    'format' => 'dd-M-yyyy',
+                    'todayHighlight' => true
+                ]
+            ]) ?>
+        </div>
+        <div class="col col-md-6 col-lg-6 col-sm-12">
+            <?= $form->field($model, 'departmentId')->widget(Select2::classname(), [
+                'data' => $department,
+                'options' => ['placeholder' => 'Select department ...'],
+                'pluginOptions' => [
+                    'allowClear' => false
+                ],
+            ]) ?>
+        </div>
+    </div>
 
     <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'departmentId')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

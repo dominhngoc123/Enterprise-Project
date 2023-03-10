@@ -352,6 +352,18 @@ class IdeaController extends Controller
         ]);
     }
 
+    public function actionGetIdeasByDepartment($departmentId)
+    {
+        $query = Idea::find()->where(['=', 'departmentId', $departmentId])->andWhere(['=', 'status', StatusConstant::ACTIVE]);
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 2]);
+        $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
+        return $this->render('index', [
+            'ideas' => $ideas,
+            'pages' => $pages
+        ]);
+    }
+
     private function getFileType($extension)
     {
         $extension = "." . $extension;

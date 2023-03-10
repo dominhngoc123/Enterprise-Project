@@ -2,6 +2,7 @@
 
 use common\models\constant\StatusConstant;
 use frontend\models\Category;
+use frontend\models\Department;
 use frontend\models\Idea;
 use yii\bootstrap5\ButtonDropdown;
 use yii\helpers\Url;
@@ -32,7 +33,22 @@ use yii\helpers\Url;
       <?php endif; ?>
       </ul>
    </div>
-   <!-- tags -->
+   <!-- departments -->
+   <div class="widget">
+      <h5 class="widget-title"><span>Department</span></h5>
+      <ul class="list-unstyled widget-list">
+      <?php $departments = Department::find()->where(['=', 'status', StatusConstant::ACTIVE])->all(); ?>
+      <?php if ($departments): ?>
+         <?php foreach ($departments as $department): ?>
+            <li><a href="<?= Url::to(['idea/get-ideas-by-department', 'departmentId' => $department->id]); ?>" class="d-flex"><?= $department->name ?>
+               <small class="ml-auto">(<?= Idea::find()->where(['=', 'departmentId', $department->id])->count(); ?>)</small></a>
+            </li>
+         <?php endforeach; ?>
+      <?php else: ?>
+         <li><a href="" class="d-flex" style="pointer-events: none !important;">No department found</a></li>
+      <?php endif; ?>
+      </ul>
+   </div>
    <!-- <div class="widget">
       <h5 class="widget-title"><span>Tags</span></h5>
       <ul class="list-inline widget-list-inline">

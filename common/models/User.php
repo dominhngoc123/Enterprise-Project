@@ -33,10 +33,6 @@ use yii\web\IdentityInterface;
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED = 0;
-    const STATUS_INACTIVE = 1;
-    const STATUS_ACTIVE = 2;
-
     /**
      * {@inheritdoc}
      */
@@ -61,7 +57,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'password'], 'required'],
+            [['username', 'password', 'email'], 'required'],
             [['departmentId', 'status'], 'integer'],
             [['username', 'full_name', 'email'], 'string', 'max' => 50],
             [['phone_number'], 'string', 'max' => 10],
@@ -71,8 +67,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             [['username'], 'unique'],
             [['email'], 'unique'],
             [['departmentId'], 'exist', 'skipOnError' => true, 'targetClass' => Department::class, 'targetAttribute' => ['departmentId' => 'id']],
-            [['status'], 'default', 'value' => self::STATUS_ACTIVE],
-            [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            [['status'], 'default', 'value' => StatusConstant::ACTIVE],
+            [['status'], 'in', 'range' => [StatusConstant::ACTIVE, StatusConstant::INACTIVE]],
         ];
     }
 
@@ -102,11 +98,11 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'password' => Yii::t('app', 'Password'),
             'full_name' => Yii::t('app', 'Full Name'),
             'email' => Yii::t('app', 'Email'),
-            'dob' => Yii::t('app', 'Dob'),
+            'dob' => Yii::t('app', 'Date of birth'),
             'phone_number' => Yii::t('app', 'Phone number'),
             'avatar' => Yii::t('app', 'Avatar'),
             'address' => Yii::t('app', 'Address'),
-            'departmentId' => Yii::t('app', 'Department ID'),
+            'departmentId' => Yii::t('app', 'Department'),
             'auth_key' => Yii::t('app', 'Auth Key'),
             'status' => Yii::t('app', 'Status'),
             'created_at' => Yii::t('app', 'Created At'),
