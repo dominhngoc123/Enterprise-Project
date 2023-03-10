@@ -2,7 +2,6 @@
 
 namespace backend\controllers;
 
-use common\helpers\DownloadHelper;
 use backend\models\Campaign;
 use backend\models\Attachment;
 use backend\models\Category;
@@ -10,8 +9,10 @@ use backend\models\Department;
 use backend\models\Idea;
 use backend\models\IdeaSearch;
 use backend\models\UploadForm;
+use common\helpers\DownloadHelper;
 use common\helpers\EmailHelper;
 use common\models\constant\StatusConstant;
+use common\models\constant\UserRolesConstant;
 use Yii;
 use yii\bootstrap5\Html as Bootstrap5Html;
 use yii\web\Controller;
@@ -58,7 +59,10 @@ class IdeaController extends Controller
                     'rules' => [
                         [
                             'allow' => true,
-                            'roles' => ['@'],
+                            'matchCallback' => function ($rule, $action) {
+                                return !\Yii::$app->user->isGuest 
+                                    && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN;
+                            },
                         ],
                     ],
                 ],
@@ -288,6 +292,39 @@ class IdeaController extends Controller
     public function actionDownloadZip()
     {
         DownloadHelper::DownloadZipFiles();
+    }
+
+    public function actionUpdateStatus($id)
+    {
+        $model = $this->findModel($id);
+        if ($model)
+        {
+            if ($model->status == StatusConstant::ACTIVE)
+            {
+                $model->status = StatusConstant::INACTIVE;
+                if ($model->save())
+                {
+                    Yii::$app->session->setFlash('success', 'Successfully deactive idea');
+                }
+                else 
+                {
+                    Yii::$app->session->setFlash('error', 'Cannot deactive idea');
+                }
+            }
+            else
+            {
+                $model->status = StatusConstant::ACTIVE;
+                if ($model->save())
+                {
+                    Yii::$app->session->setFlash('success', 'Successfully active idea');
+                }
+                else
+                {
+                    Yii::$app->session->setFlash('error', 'Cannot active idea');
+                }
+            }
+        }
+        return $this->redirect(['index']);
     }
 
     /**

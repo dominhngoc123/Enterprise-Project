@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\Attachment;
 use backend\models\AttachmentSearch;
+use common\models\constant\UserRolesConstant;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -33,7 +34,10 @@ class AttachmentController extends Controller
                     'rules' => [
                         [
                             'allow' => true,
-                            'roles' => ['@'],
+                            'matchCallback' => function ($rule, $action) {
+                                return !\Yii::$app->user->isGuest 
+                                    && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN;
+                            },
                         ],
                     ],
                 ],

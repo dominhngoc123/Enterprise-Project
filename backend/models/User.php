@@ -19,6 +19,7 @@ use Yii;
  * @property int|null $departmentId
  * @property string $auth_key
  * @property int $status
+ * @property int $role
  * @property string|null $created_at
  * @property string|null $created_by
  * @property string|null $updated_at

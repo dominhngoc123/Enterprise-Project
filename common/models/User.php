@@ -3,6 +3,7 @@
 namespace common\models;
 
 use common\models\constant\StatusConstant;
+use common\models\constant\UserRolesConstant;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -58,7 +59,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['username', 'password', 'email'], 'required'],
-            [['departmentId', 'status'], 'integer'],
+            [['departmentId', 'status', 'role'], 'integer'],
             [['username', 'full_name', 'email'], 'string', 'max' => 50],
             [['phone_number'], 'string', 'max' => 10],
             [['password', 'avatar', 'address', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'string', 'max' => 255],
@@ -69,6 +70,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             [['departmentId'], 'exist', 'skipOnError' => true, 'targetClass' => Department::class, 'targetAttribute' => ['departmentId' => 'id']],
             [['status'], 'default', 'value' => StatusConstant::ACTIVE],
             [['status'], 'in', 'range' => [StatusConstant::ACTIVE, StatusConstant::INACTIVE]],
+            [['role'], 'default', 'value' => UserRolesConstant::STAFF],
+            [['status'], 'in', 'range' => [UserRolesConstant::ADMIN, UserRolesConstant::QA_COORDINATOR, UserRolesConstant::QA_MANAGER, UserRolesConstant::STAFF]],
         ];
     }
 
@@ -78,12 +81,12 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             $this->auth_key = \Yii::$app->security->generateRandomString();
             $this->created_at = new \yii\db\Expression('NOW()');
             $this->created_by = Yii::$app->user->identity->username;
+            $this->status = 1;
         } else {
             $this->updated_at = new \yii\db\Expression('NOW()');
             $this->updated_by = Yii::$app->user->identity->username;
         }
         $this->password = Yii::$app->security->generatePasswordHash($this->password);
-        $this->status = 1;
         return parent::beforeSave($insert);
     }
 
@@ -105,6 +108,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'departmentId' => Yii::t('app', 'Department'),
             'auth_key' => Yii::t('app', 'Auth Key'),
             'status' => Yii::t('app', 'Status'),
+            'role' => Yii::t('app', 'User role'),
             'created_at' => Yii::t('app', 'Created At'),
             'created_by' => Yii::t('app', 'Created By'),
             'updated_at' => Yii::t('app', 'Updated At'),

@@ -1,5 +1,6 @@
 <?php
 
+use common\models\constant\UserRolesConstant;
 use kartik\date\DatePicker;
 use kartik\select2\Select2;
 use yii\helpers\Html;
@@ -31,10 +32,22 @@ use yii\widgets\ActiveForm;
                 ]
             ]) ?>
         </div>
+    </div>
+
+    <div class="row">
         <div class="col col-md-6 col-lg-6 col-sm-12">
             <?= $form->field($model, 'departmentId')->widget(Select2::classname(), [
                 'data' => $department,
                 'options' => ['placeholder' => 'Select department ...'],
+                'pluginOptions' => [
+                    'allowClear' => false
+                ],
+            ]) ?>
+        </div>
+        <div class="col col-md-6 col-lg-6 col-sm-12">
+            <?= $form->field($model, 'role')->widget(Select2::classname(), [
+                'data' => $role,
+                'options' => ['placeholder' => 'Select role...'],
                 'pluginOptions' => [
                     'allowClear' => false
                 ],

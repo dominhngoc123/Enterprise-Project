@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use backend\models\Department;
 use backend\models\DepartmentSearch;
+use common\models\constant\StatusConstant;
+use common\models\constant\UserRolesConstant;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -33,7 +35,10 @@ class DepartmentController extends Controller
                     'rules' => [
                         [
                             'allow' => true,
-                            'roles' => ['@'],
+                            'matchCallback' => function ($rule, $action) {
+                                return !\Yii::$app->user->isGuest 
+                                    && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN;
+                            },
                         ],
                     ],
                 ],
@@ -123,6 +128,39 @@ class DepartmentController extends Controller
     {
         $this->findModel($id)->delete();
 
+        return $this->redirect(['index']);
+    }
+
+    public function actionUpdateStatus($id)
+    {
+        $model = $this->findModel($id);
+        if ($model)
+        {
+            if ($model->status == StatusConstant::ACTIVE)
+            {
+                $model->status = StatusConstant::INACTIVE;
+                if ($model->save())
+                {
+                    Yii::$app->session->setFlash('success', 'Successfully deactive department');
+                }
+                else 
+                {
+                    Yii::$app->session->setFlash('error', 'Cannot deactive department');
+                }
+            }
+            else
+            {
+                $model->status = StatusConstant::ACTIVE;
+                if ($model->save())
+                {
+                    Yii::$app->session->setFlash('success', 'Successfully active department');
+                }
+                else
+                {
+                    Yii::$app->session->setFlash('error', 'Cannot active department');
+                }
+            }
+        }
         return $this->redirect(['index']);
     }
 

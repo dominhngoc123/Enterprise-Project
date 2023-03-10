@@ -6,6 +6,7 @@ use backend\models\Department;
 use backend\models\User;
 use backend\models\UserSearch;
 use common\models\constant\StatusConstant;
+use common\models\constant\UserRolesConstant;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -36,7 +37,10 @@ class UserController extends Controller
                     'rules' => [
                         [
                             'allow' => true,
-                            'roles' => ['@'],
+                            'matchCallback' => function ($rule, $action) {
+                                return !\Yii::$app->user->isGuest 
+                                    && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN;
+                            },
                         ],
                     ],
                 ],
@@ -81,6 +85,7 @@ class UserController extends Controller
     public function actionCreate()
     {
         $model = new User();
+        $role = array(UserRolesConstant::ADMIN => 'Admin' , UserRolesConstant::QA_COORDINATOR => 'QA Coordinator', UserRolesConstant::QA_MANAGER =>'QA Manager', UserRolesConstant::STAFF => 'Staff');
         $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -91,6 +96,7 @@ class UserController extends Controller
         }
 
         return $this->render('create', [
+            'role' => $role,
             'model' => $model,
             'department' => ArrayHelper::map($department, 'id', 'name'),
         ]);
@@ -107,12 +113,14 @@ class UserController extends Controller
     {
         $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
         $model = $this->findModel($id);
+        $role = array(UserRolesConstant::ADMIN => 'Admin' , UserRolesConstant::QA_COORDINATOR => 'QA Coordinator', UserRolesConstant::QA_MANAGER =>'QA Manager', UserRolesConstant::STAFF => 'Staff');
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);           
         }
 
         return $this->render('update', [
+            'role' => $role,
             'model' => $model,
             'department' => ArrayHelper::map($department, 'id', 'name'),
         ]);
@@ -129,6 +137,46 @@ class UserController extends Controller
     {
         $this->findModel($id)->delete();
 
+        return $this->redirect(['index']);
+    }
+
+    public function actionUpdateStatus($id)
+    {
+        if (Yii::$app->user->identity->id != $id)
+        {
+            $model = $this->findModel($id);
+            if ($model)
+            {
+                if ($model->status == StatusConstant::ACTIVE)
+                {
+                    $model->status = StatusConstant::INACTIVE;
+                    if ($model->save())
+                    {
+                        Yii::$app->session->setFlash('success', 'Successfully deactive user');
+                    }
+                    else
+                    {
+                        Yii::$app->session->setFlash('error', 'Cannot deactive user');
+                    }
+                }
+                else
+                {
+                    $model->status = StatusConstant::ACTIVE;
+                    if ($model->save())
+                    {
+                        Yii::$app->session->setFlash('success', 'Successfully dective user success');
+                    }
+                    else
+                    {
+                        Yii::$app->session->setFlash('error', 'Cannot deactive user');
+                    }
+                }
+            }
+        }
+        else
+        {
+            Yii::$app->session->setFlash('warning', 'Cannot deactive root admin account');
+        }
         return $this->redirect(['index']);
     }
 

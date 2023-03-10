@@ -14,7 +14,7 @@ return [
         'departmentId' => 1,
         'auth_key' => '$2y$13$iTkZeIYcbrCwQxVLnpueneajQUrIJZG2kntbzDOTGyEX2hV973Nkq',
         'status' => 1,
-        'role' => 2,
+        'role' => 0,
         'created_at' => new \yii\db\Expression('NOW()'),
         'created_by' => 'admin',
         'updated_at' => null,

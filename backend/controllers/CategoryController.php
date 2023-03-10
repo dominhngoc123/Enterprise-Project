@@ -5,6 +5,8 @@ namespace backend\controllers;
 use backend\models\Category;
 use backend\models\CategorySearch;
 use backend\models\Idea;
+use common\models\constant\StatusConstant;
+use common\models\constant\UserRolesConstant;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -34,7 +36,10 @@ class CategoryController extends Controller
                     'rules' => [
                         [
                             'allow' => true,
-                            'roles' => ['@'],
+                            'matchCallback' => function ($rule, $action) {
+                                return !\Yii::$app->user->isGuest 
+                                    && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN;
+                            },
                         ],
                     ],
                 ],
@@ -136,6 +141,39 @@ class CategoryController extends Controller
             Yii::$app->session->setFlash('error', 'Cannot delete category due to existing idea(s)');
             return $this->redirect(['index']);
         }
+    }
+
+    public function actionUpdateStatus($id)
+    {
+        $model = $this->findModel($id);
+        if ($model)
+        {
+            if ($model->status == StatusConstant::ACTIVE)
+            {
+                $model->status = StatusConstant::INACTIVE;
+                if ($model->save())
+                {
+                    Yii::$app->session->setFlash('success', 'Successfully deactive category');
+                }
+                else 
+                {
+                    Yii::$app->session->setFlash('error', 'Cannot deactive category');
+                }
+            }
+            else
+            {
+                $model->status = StatusConstant::ACTIVE;
+                if ($model->save())
+                {
+                    Yii::$app->session->setFlash('success', 'Successfully active category');
+                }
+                else
+                {
+                    Yii::$app->session->setFlash('error', 'Cannot active category');
+                }
+            }
+        }
+        return $this->redirect(['index']);
     }
 
     /**

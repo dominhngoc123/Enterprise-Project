@@ -73,7 +73,7 @@ class m130524_201442_init extends Migration
             'departmentId' => $this->integer(),
             'auth_key' => $this->string(32)->notNull(),
             'status' => $this->smallInteger()->notNull()->defaultValue(common\models\constant\StatusConstant::ACTIVE),
-            'role' => $this->smallInteger()->notNull()->defaultValue(common\models\constant\UserRolesConstant::STAFF),
+            'role' => $this->smallInteger()->notNull(),
             'created_at' => $this->string(),
             'created_by' => $this->string(),
             'updated_at' => $this->string(),

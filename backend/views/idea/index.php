@@ -75,7 +75,26 @@ $this->params['breadcrumbs'][] = $this->title;
             //'updated_by',
             [
                 'class' => ActionColumn::className(),
-                'headerOptions' => ['style' => 'width:7%'],
+                'template'=>'{view} {update} {update-status} {delete}',
+                'buttons'=>[
+                    'update-status' => function ($url, $model) {     
+                        if ($model->status == StatusConstant::ACTIVE)
+                        {
+                            return Html::a('<span class="fa fa-toggle-off"></span>', $url, [
+
+                                'title' => Yii::t('yii', 'Deactive'),
+                            ]);  
+                        }
+                        else
+                        {
+                            return Html::a('<span class="fa fa-toggle-on"></span>', $url, [
+
+                                'title' => Yii::t('yii', 'Active'),
+                            ]);  
+                        }                        
+                      }
+                  ],
+                'headerOptions' => ['style' => 'width:10%'],
                 'urlCreator' => function ($action, Idea $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
