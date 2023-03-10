@@ -436,6 +436,10 @@ a:hover {
   font-size: 20px;
 }
 
+.search-box::-webkit-search-cancel-button {
+  -webkit-appearance: none !important;
+}
+
 .post-title {
   color: #1c1d1f;
 }

@@ -364,6 +364,20 @@ class IdeaController extends Controller
         ]);
     }
 
+    public function actionSearch($inputSearch)
+    {
+        $query = Idea::find()->where(['=', 'status', 1])->andWhere(['parentId' => NULL]);
+        $query->andFilterWhere(['like', 'title', $inputSearch])
+            ->orFilterWhere(['like', 'content', $inputSearch]);
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
+        $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
+        return $this->render('index', [
+            'ideas' => $ideas,
+            'pages' => $pages
+        ]);
+    }
+
     private function getFileType($extension)
     {
         $extension = "." . $extension;
