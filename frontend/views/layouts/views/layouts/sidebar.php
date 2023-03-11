@@ -82,7 +82,7 @@ use yii\helpers\Url;
                   <h5 class="h6 mb-0"><a href="<?= Url::to(['idea/view', 'id' => $lastest_idea->id]); ?>"><?= $lastest_idea->title; ?></a></h5>
                   <small>
                      <?php
-                     $time = strtotime('10/16/2003');
+                     $time = strtotime($lastest_idea->created_at);
                      $date = date('Y-m-d', $time);
                      echo "$date";
                      ?>

@@ -38,9 +38,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         </li>
                         <li class="list-inline-item">Posted at:
                             <?php
+                            date_default_timezone_set('UTC');
                             $posted_at = strtotime($idea->created_at);
+                            
                             $date = date('Y-m-d', $posted_at);
-                            $time = date('H:m', $posted_at);
+                            $time = date('h:i', $posted_at);
                             echo "$date $time";
                             ?>
                         </li>
