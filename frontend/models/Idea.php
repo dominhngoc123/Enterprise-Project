@@ -44,7 +44,6 @@ class Idea extends ModelsIdea
     {
         return [
             [['title', 'content'], 'string'],
-            [['allowTermsConditions', 'title', 'content'], 'required'],
             [['parentId', 'userId', 'categoryId', 'campaignId', 'upvote_count', 'downvote_count', 'post_type', 'status'], 'integer'],
             [['created_at', 'created_by', 'updated_at', 'updated_by'], 'string', 'max' => 255],
             [['campaignId'], 'exist', 'skipOnError' => true, 'targetClass' => campaign::class, 'targetAttribute' => ['campaignId' => 'id']],

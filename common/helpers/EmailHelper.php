@@ -34,4 +34,18 @@ class EmailHelper
             EmailHelper::sendEmail(ConfigParams::SMTP_EMAIL, $receiver->email, $subject, $content, $htmlBody);
         }
     }
+
+    public static function emailWhenCreateComment($idea, $comment)
+    {
+        // Get sender id (QA coordinator of department)
+        $ideaAuthor = User::find()->where(['=', 'id', $idea->userId])->one();
+        if ($ideaAuthor)
+        {
+            $commentAuthor = User::find()->where(['=', 'id', $comment->userId])->one();
+            $subject = "New comment submitted";
+            $content = "User: " . $commentAuthor->full_name . " have just posted new comment: " . $comment->content;
+            $htmlBody = "<b>$content</b>";
+            EmailHelper::sendEmail(ConfigParams::SMTP_EMAIL, $ideaAuthor->email, $subject, $content, $htmlBody);
+        }
+    }
 }

@@ -166,7 +166,7 @@ class IdeaController extends Controller
         $comment = new Idea();
         if ($this->request->isPost) {
             if ($comment->load($this->request->post())) {
-                $comment->title = null;
+                $comment->title = "";
                 $comment->parentId = $ideaId;
                 $comment->categoryId = null;
                 $comment->campaignId = null;
@@ -174,7 +174,14 @@ class IdeaController extends Controller
                 $comment->downvote_count = 0;
                 if ($comment->save()) {
                     Yii::$app->session->setFlash('success', 'Create new comment success');
+                    $idea = Idea::find()->where(['id' => $ideaId])->andWhere(['status' => StatusConstant::ACTIVE])->one();
+                    if ($idea && Yii::$app->user->identity->id != $idea->userId)
+                    {
+                        EmailHelper::emailWhenCreateComment($idea, $comment);
+                    }
                 } else {
+                    var_dump($comment->getErrors());
+                    die();
                     Yii::$app->session->setFlash('error', 'Cannot create new comment');
                 }
             }
