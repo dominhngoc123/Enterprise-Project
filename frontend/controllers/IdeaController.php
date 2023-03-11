@@ -125,20 +125,28 @@ class IdeaController extends Controller
                 $model->downvote_count = 0;
                 $files = UploadedFile::getInstances($model, 'file');
                 $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
-                $model->save();
-                EmailHelper::emailWhenSubmitIdea($model);
-                $folder_name = 'idea_' . time();
-                FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
-                foreach ($files as $file) {
-                    $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
-                    $file->saveAs($url);
-                    $attachment = new Attachment();
-                    $attachment->url = $url;
-                    $attachment->file_type = $this->getFileType($file->extension);
-                    $attachment->original_name = $file->name;
-                    $attachment->ideaId = $model->id;
-                    $attachment->save();
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', 'Create new comment success');
+                    EmailHelper::emailWhenSubmitIdea($model);
+                    $folder_name = 'idea_' . time();
+                    FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
+                    foreach ($files as $file) {
+                        $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                        $file->saveAs($url);
+                        $attachment = new Attachment();
+                        $attachment->url = $url;
+                        $attachment->file_type = $this->getFileType($file->extension);
+                        $attachment->original_name = $file->name;
+                        $attachment->ideaId = $model->id;
+                        $attachment->save();
+                    }
+                    Yii::$app->session->setFlash('success', 'Create new idea success');
                 }
+                else
+                {
+                    Yii::$app->session->setFlash('error', 'Cannot create new idea');
+                }
+
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
@@ -175,8 +183,7 @@ class IdeaController extends Controller
                 if ($comment->save()) {
                     Yii::$app->session->setFlash('success', 'Create new comment success');
                     $idea = Idea::find()->where(['id' => $ideaId])->andWhere(['status' => StatusConstant::ACTIVE])->one();
-                    if ($idea && Yii::$app->user->identity->id != $idea->userId)
-                    {
+                    if ($idea && Yii::$app->user->identity->id != $idea->userId) {
                         EmailHelper::emailWhenCreateComment($idea, $comment);
                     }
                 } else {
