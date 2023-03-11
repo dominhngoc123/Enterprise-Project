@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </li>
                     </ul>
                     <div class="snip_text mb-10"><?= htmlspecialchars_decode(stripslashes($idea->content)); ?></div>
-                    <a href="post-details-1.html" class="btn btn-outline-primary">Continue Reading</a>
+                    <a href="<?= Url::toRoute(['view', 'id' => $idea->id]) ?>" class="btn btn-outline-primary">Continue Reading</a>
                 </div>
             </article>
         <?php endforeach; ?>
