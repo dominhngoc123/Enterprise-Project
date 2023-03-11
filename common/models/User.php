@@ -71,7 +71,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             [['status'], 'default', 'value' => StatusConstant::ACTIVE],
             [['status'], 'in', 'range' => [StatusConstant::ACTIVE, StatusConstant::INACTIVE]],
             [['role'], 'default', 'value' => UserRolesConstant::STAFF],
-            [['status'], 'in', 'range' => [UserRolesConstant::ADMIN, UserRolesConstant::QA_COORDINATOR, UserRolesConstant::QA_MANAGER, UserRolesConstant::STAFF]],
+            [['role'], 'in', 'range' => [UserRolesConstant::ADMIN, UserRolesConstant::QA_COORDINATOR, UserRolesConstant::QA_MANAGER, UserRolesConstant::STAFF]],
         ];
     }
 

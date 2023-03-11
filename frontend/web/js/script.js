@@ -122,5 +122,17 @@
 		}
 	});
 
+	$('#idea-allowtermsconditions').on('click', function() {
+		let isChecked = $('#idea-allowtermsconditions').is(':checked');
+		if (isChecked)
+		{
+			$('#submit-idea').removeClass('disabled');
+		}
+		else
+		{
+			$('#submit-idea').addClass('disabled');
+		}
+	})
+
 })(jQuery);
 

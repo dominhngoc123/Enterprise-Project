@@ -107,9 +107,23 @@ use kartik\switchinput\SwitchInput;
             </div>
 
         </div>
-        <div class="form-group">
-            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'style' => ['width' => '100%']]) ?>
-        </div>
+        <?php if ($model->isNewRecord) : ?>
+            <div class="terms-conditions ml-10">
+                <?= $form->field($model, 'allowTermsConditions', [
+                    'template' => '{input}',
+                    'options' => ['tag' => false, 'required' => true]
+                ])->checkbox()->label(false) ?>
+                <a href="#" data-toggle="modal" data-target="#terms-conditions-modal">Terms and Conditions</a>
+            </div>
+            <div class="form-group">
+                <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success disabled', 'id' => 'submit-idea' , 'style' => ['width' => '100%']]) ?>
+            </div>
+        <?php else:?>
+            <div class="form-group">
+                <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'id' => 'submit-idea' , 'style' => ['width' => '100%']]) ?>
+            </div>
+        <?php endif; ?>
+        
         <?php ActiveForm::end(); ?>
 
 
