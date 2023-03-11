@@ -351,7 +351,7 @@ class IdeaController extends Controller
     {
         $query = Idea::find()->where(['=', 'categoryId', $categoryId])->andWhere(['=', 'status', StatusConstant::ACTIVE]);
         $countQuery = clone $query;
-        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 2]);
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
         $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
         return $this->render('index', [
             'ideas' => $ideas,
@@ -363,7 +363,19 @@ class IdeaController extends Controller
     {
         $query = Idea::find()->where(['=', 'departmentId', $departmentId])->andWhere(['=', 'status', StatusConstant::ACTIVE]);
         $countQuery = clone $query;
-        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 2]);
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
+        $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
+        return $this->render('index', [
+            'ideas' => $ideas,
+            'pages' => $pages
+        ]);
+    }
+
+    public function actionGetIdeasByAuthor($authorId)
+    {
+        $query = Idea::find()->where(['=', 'userId', $authorId])->andWhere(['=', 'status', StatusConstant::ACTIVE])->andWhere(['parentId' => NULL]);
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
         $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
         return $this->render('index', [
             'ideas' => $ideas,

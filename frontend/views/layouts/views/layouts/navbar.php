@@ -34,7 +34,7 @@ use yii\helpers\Url;
                   </a>
                   <div class="dropdown-menu">
                      <a class="dropdown-item" href="#" class="d-block" data-toggle="modal" data-target="#profile-modal">Profile</a>
-                     <a class="dropdown-item" href="#" class="d-block" data-toggle="modal" data-target="#terms-conditions-modal">Posted ideas</a>
+                     <a class="dropdown-item" href="<?= Url::to(['idea/get-ideas-by-author', 'authorId' => Yii::$app->user->identity->id]); ?>" class="d-block">Posted ideas</a>
                      <a class="dropdown-item" href="index-full-right.html">View data</a>
                      <?= Html::a('Logout', ['/site/logout'], ['data-method' => 'post', 'class' => 'dropdown-item']) ?>
                   </div>
