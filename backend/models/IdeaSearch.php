@@ -79,7 +79,7 @@ class IdeaSearch extends Idea
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_at', $this->updated_at])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by]);
-
+        $query->andWhere(['parentId' => null]);
         return $dataProvider;
     }
 }
