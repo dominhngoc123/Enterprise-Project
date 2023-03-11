@@ -392,9 +392,10 @@ class IdeaController extends Controller
 
     public function actionSearch($inputSearch)
     {
-        $query = Idea::find()->where(['=', 'status', 1])->andWhere(['parentId' => NULL]);
+        $query = Idea::find();
         $query->andFilterWhere(['like', 'title', $inputSearch])
             ->orFilterWhere(['like', 'content', $inputSearch]);
+        $query->andwhere(['=', 'status', StatusConstant::ACTIVE])->andWhere(['parentId' => NULL]);
         $countQuery = clone $query;
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
         $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
