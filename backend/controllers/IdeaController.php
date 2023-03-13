@@ -133,6 +133,7 @@ class IdeaController extends Controller
                     $attachment->ideaId = $model->id;
                     $attachment->save();
                 }
+                Yii::$app->session->setFlash('success', 'Successfully create idea');
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
@@ -228,6 +229,7 @@ class IdeaController extends Controller
                 $attachment->ideaId = $model->id;
                 $attachment->save();
             }
+            Yii::$app->session->setFlash('success', 'Successfully update idea');
             return $this->redirect(['view', 'id' => $model->id]);
         }
         $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
@@ -348,6 +350,7 @@ class IdeaController extends Controller
             ->delete('reaction', ['ideaId' => $id])
             ->execute();
         $this->findModel($id)->delete();
+        Yii::$app->session->setFlash('success', 'Successfully delete idea');
         return $this->redirect(['index']);
     }
 

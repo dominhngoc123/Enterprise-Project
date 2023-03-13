@@ -1,3 +1,7 @@
+<?php
+
+use yii\helpers\Url;
+?>
 <div class="modal fade" id="profile-modal" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -56,7 +60,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <a href="#" class="btn btn-primary">Update</a>
+                    <a href="<?= Url::to(['user/update', 'id' => Yii::$app->user->identity->id]) ?>" class="btn btn-primary">Update</a>
                 </div>
             </div>
         </div>

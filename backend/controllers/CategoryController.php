@@ -87,7 +87,7 @@ class CategoryController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                Yii::$app->session->setFlash('success', 'Create new category success');
+                Yii::$app->session->setFlash('success', 'Successfully create category');
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
@@ -111,7 +111,7 @@ class CategoryController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Update category success');
+            Yii::$app->session->setFlash('success', 'Successfully update category');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -129,7 +129,7 @@ class CategoryController extends Controller
      */
     public function actionDelete($id)
     {
-        $post = Idea::find()->where(['=', 'categoryId', $id])->all();
+        $post = Idea::find()->where(['=', 'categoryId', $id])->one();
         if (!$post)
         {
             $this->findModel($id)->delete();

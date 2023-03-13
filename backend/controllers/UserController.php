@@ -89,6 +89,7 @@ class UserController extends Controller
         $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                Yii::$app->session->setFlash('success', 'Successfully create user');
                 return $this->redirect(['view', 'id' => $model->id]);              
             }
         } else {
@@ -116,6 +117,7 @@ class UserController extends Controller
         $role = array(UserRolesConstant::ADMIN => 'Admin' , UserRolesConstant::QA_COORDINATOR => 'QA Coordinator', UserRolesConstant::QA_MANAGER =>'QA Manager', UserRolesConstant::STAFF => 'Staff');
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Successfully update user');
             return $this->redirect(['view', 'id' => $model->id]);           
         }
 
@@ -135,8 +137,15 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        if (Yii::$app->user->identity->id != $id)
+        {
+            $this->findModel($id)->delete();
+            Yii::$app->session->setFlash('success', 'Successfully delete user');
+        }
+        else
+        {
+            Yii::$app->session->setFlash('warning', 'Cannot delete yourself');
+        }
         return $this->redirect(['index']);
     }
 
@@ -175,7 +184,7 @@ class UserController extends Controller
         }
         else
         {
-            Yii::$app->session->setFlash('warning', 'Cannot deactive root admin account');
+            Yii::$app->session->setFlash('warning', 'Cannot deactive yourself');
         }
         return $this->redirect(['index']);
     }
