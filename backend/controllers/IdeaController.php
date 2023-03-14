@@ -119,6 +119,14 @@ class IdeaController extends Controller
                 $model->downvote_count = 0;
                 $files = UploadedFile::getInstances($model, 'file');
                 $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
+                $currentDate = new \yii\db\Expression('NOW()');
+                $campaign = Campaign::find()->where(['>=', 'end_date', $currentDate])->andWhere(['<=', 'start_date', $currentDate])->andWhere(['=', 'status', StatusConstant::ACTIVE])->andWhere(['<>', 'id', 1])->one();
+                if ($campaign) {
+                    $model->campaignId = $campaign->id;
+                } else {
+                    Yii::$app->session->setFlash('warning', 'No campaign available. This topic will be moved to general campaign');
+                    $model->id = 1;
+                }
                 $model->save();
                 EmailHelper::emailWhenSubmitIdea($model);
                 $folder_name = 'idea_' . time();

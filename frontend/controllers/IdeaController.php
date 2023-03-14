@@ -125,8 +125,15 @@ class IdeaController extends Controller
                 $model->downvote_count = 0;
                 $files = UploadedFile::getInstances($model, 'file');
                 $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
+                $currentDate = new \yii\db\Expression('NOW()');
+                $campaign = Campaign::find()->where(['>=', "STR_TO_DATE(end_date, '%d-%m-%Y')", $currentDate])->andWhere(['<=', "STR_TO_DATE(start_date, '%d-%m-%Y')", $currentDate])->andWhere(['=', 'status', StatusConstant::ACTIVE])->andWhere(['<>', 'id', 1])->one();
+                if ($campaign) {
+                    $model->campaignId = $campaign->id;
+                } else {
+                    Yii::$app->session->setFlash('warning', 'No campaign available. This topic will be moved to general campaign');
+                    $model->campaignId = 1;
+                }
                 if ($model->save()) {
-                    Yii::$app->session->setFlash('success', 'Create new comment success');
                     EmailHelper::emailWhenSubmitIdea($model);
                     $folder_name = 'idea_' . time();
                     FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
@@ -141,9 +148,7 @@ class IdeaController extends Controller
                         $attachment->save();
                     }
                     Yii::$app->session->setFlash('success', 'Create new idea success');
-                }
-                else
-                {
+                } else {
                     Yii::$app->session->setFlash('error', 'Cannot create new idea');
                 }
 
@@ -251,7 +256,6 @@ class IdeaController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
         $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
-        $campaign = Campaign::find()->where(['status' => StatusConstant::ACTIVE])->all();
         $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
 
         return $this->render('update', [
@@ -260,7 +264,6 @@ class IdeaController extends Controller
             'files_type' => $files_type,
             'model' => $model,
             'category' => ArrayHelper::map($category, 'id', 'name'),
-            'campaign' => ArrayHelper::map($campaign, 'id', 'name'),
             'department' => ArrayHelper::map($department, 'id', 'name'),
             'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
         ]);

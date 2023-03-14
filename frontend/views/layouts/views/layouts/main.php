@@ -77,14 +77,22 @@ $this->registerJsFile($publishedRes[1] . '/control_sidebar.js', ['depends' => '\
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
             </div>
-            <div class="row">
-                <div class="col-lg-9  mb-5 mb-lg-0">
-                    <?= $this->render('content', ['content' => $content, 'assetDir' => $assetDir]) ?>
+            <?php if (Yii::$app->controller->id === 'user' && Yii::$app->controller->action->id === 'author') : ?>
+                <div class="row">
+                    <div class="col-lg-12 mb-5 mb-lg-0">
+                        <?= $this->render('content', ['content' => $content, 'assetDir' => $assetDir]) ?>
+                    </div>
                 </div>
-                <aside class="col-lg-3">
-                    <?= $this->render('sidebar', ['assetDir' => $assetDir]) ?>
-			    </aside>
-            </div>
+            <?php else : ?>
+                <div class="row">
+                    <div class="col-lg-9  mb-5 mb-lg-0">
+                        <?= $this->render('content', ['content' => $content, 'assetDir' => $assetDir]) ?>
+                    </div>
+                    <aside class="col-lg-3">
+                        <?= $this->render('sidebar', ['assetDir' => $assetDir]) ?>
+                    </aside>
+                </div>
+            <?php endif; ?>
         </div>
     </section>
 
@@ -93,7 +101,7 @@ $this->registerJsFile($publishedRes[1] . '/control_sidebar.js', ['depends' => '\
 
     <?= $this->render('profile-modal') ?>
     <?= $this->render('terms-conditions') ?>
-    
+
     <!-- /.content-wrapper -->
     <!-- Main Footer -->
     <?= $this->render('footer') ?>
@@ -101,7 +109,7 @@ $this->registerJsFile($publishedRes[1] . '/control_sidebar.js', ['depends' => '\
 
     <?php $this->endBody() ?>
     <!-- JS Plugins -->
-    
+
     <script src="../plugins/bootstrap/bootstrap.min.js" async></script>
     <script src="../plugins/slick/slick.min.js"></script>
 

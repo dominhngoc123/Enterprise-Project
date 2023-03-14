@@ -1,7 +1,10 @@
 <?php
 
+use backend\models\Campaign;
+use backend\models\Category;
 use backend\models\Idea;
 use backend\models\User;
+use common\models\constant\IdeaTypeConstant;
 use common\models\constant\StatusConstant;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -38,15 +41,43 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Author',
                 'headerOptions' => ['style' => 'width:20%'],
                 'value' => function ($model) {
-                    return User::find()->where(['=', 'id', $model->userId])->one()->full_name;
+                    $user = User::find()->where(['=', 'id', $model->userId])->one();
+                    return $user ? $user->full_name : NULL;
                 }
             ],
             //'attachmentId',
-            'categoryId',
-            'campaignId',
+            [
+                'attribute' => 'categoryId',
+                'label' => 'Category',
+                'headerOptions' => ['style' => 'width:20%'],
+                'value' => function ($model) {
+                    $category = Category::find()->where(['=', 'id', $model->categoryId])->one();
+                    return $category ? $category->name : NULL;
+                }
+            ],
+            [
+                'attribute' => 'campaignId',
+                'label' => 'Campaign',
+                'headerOptions' => ['style' => 'width:20%'],
+                'value' => function ($model) {
+                    $campaign = Campaign::find()->where(['=', 'id', $model->campaignId])->one();
+                    return $campaign ? $campaign->name : NULL;
+                }
+            ],
             'upvote_count',
             'downvote_count',
-            'post_type',
+            [
+                'attribute' => 'post_type',
+                'label' => 'Idea type',
+                'headerOptions' => ['style' => 'width:20%'],
+                'value' => function ($model) {
+                    if ($model->post_type == IdeaTypeConstant::ANONYMOUS)
+                    {
+                        return 'Anonymous';
+                    }
+                    return 'Public';
+                }
+            ],
             [
                 'attribute' => 'status',
                 'headerOptions' => ['style' => 'width:10%'],
@@ -59,29 +90,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'created_by',
             'updated_at',
             'updated_by',
-            [
-                'class' => ActionColumn::className(),
-                'template' => '{view} {update} {update-status} {delete}',
-                'buttons' => [
-                    'update-status' => function ($url, $model) {
-                        if ($model->status == StatusConstant::ACTIVE) {
-                            return Html::a('<span class="fa fa-toggle-off"></span>', $url, [
-
-                                'title' => Yii::t('yii', 'Deactive'),
-                            ]);
-                        } else {
-                            return Html::a('<span class="fa fa-toggle-on"></span>', $url, [
-
-                                'title' => Yii::t('yii', 'Active'),
-                            ]);
-                        }
-                    }
-                ],
-                'headerOptions' => ['style' => 'width:10%'],
-                'urlCreator' => function ($action, Idea $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                }
-            ],
         ];
 
         $columns = [

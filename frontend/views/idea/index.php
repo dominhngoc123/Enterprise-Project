@@ -1,5 +1,6 @@
 <?php
 
+use common\models\constant\IdeaTypeConstant;
 use frontend\models\Category;
 use frontend\models\Idea;
 use frontend\models\User;
@@ -34,7 +35,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-md-8">
                     <h3 class="h5"><a class="post-title" href="<?= Url::toRoute(['view', 'id' => $idea->id]) ?>"><?= $idea->title ?></a></h3>
                     <ul class="list-inline post-meta mb-2">
-                        <li class="list-inline-item"><i class="ti-user mr-2"></i><a href="author.html"><?= User::find()->where(['=', 'id', $idea->userId])->one()->full_name; ?></a>
+                        <li class="list-inline-item"><i class="ti-user mr-2"></i>
+                        <?php if ($idea->post_type == IdeaTypeConstant::PUBLIC): ?>
+                            <a href="<?= Url::to(['user/author', 'id' => $idea->userId]) ?>"><?= User::find()->where(['=', 'id', $idea->userId])->one()->full_name; ?></a>
+                        <?php else: ?>
+                            <span>Anonymous</span>
+                        <?php endif; ?>
                         </li>
                         <li class="list-inline-item">Posted at:
                             <?php

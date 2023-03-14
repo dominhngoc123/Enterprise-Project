@@ -26,21 +26,12 @@ use yii\helpers\Url;
                 ],
             ]) ?>
         </div>
-        <div class="col col-md-6 col-lg-6 col-sm-12">
-            <?= $form->field($model, 'campaignId')->widget(Select2::classname(), [
-                'data' => $campaign,
-                'options' => ['placeholder' => 'Select an campaign ...'],
-                'pluginOptions' => [
-                    'allowClear' => false
-                ],
-            ]) ?>
-        </div>
     </div>
     <div class="row">
         <div class="col col-md-6 col-lg-6 col-sm-12">
             <?= $form->field($model, 'departmentId')->widget(Select2::classname(), [
                 'data' => $department,
-                'options' => ['placeholder' => 'Select an campaign ...'],
+                'options' => ['placeholder' => 'Select an department ...'],
                 'pluginOptions' => [
                     'allowClear' => false
                 ],

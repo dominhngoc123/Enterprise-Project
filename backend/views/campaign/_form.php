@@ -18,21 +18,21 @@ use kartik\date\DatePicker;
 
     <?= $form->field($model, 'start_date')->widget(DatePicker::classname(), [
         'pluginOptions' => [
-            'format' => 'dd-M-yyyy',
+            'format' => 'dd-mm-yyyy',
             'todayHighlight' => true
         ]
     ]) ?>
 
     <?= $form->field($model, 'end_date')->widget(DatePicker::classname(), [
         'pluginOptions' => [
-            'format' => 'dd-M-yyyy',
+            'format' => 'dd-mm-yyyy',
             'todayHighlight' => true
         ]
     ]) ?>
 
     <?= $form->field($model, 'closure_date')->widget(DatePicker::classname(), [
         'pluginOptions' => [
-            'format' => 'dd-M-yyyy',
+            'format' => 'dd-mm-yyyy',
             'todayHighlight' => true
         ]
     ]) ?>
