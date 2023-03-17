@@ -17,6 +17,6 @@ $this->params['breadcrumbs'][] = $this->title;
     'files_type' => $files_type,
     'model' => $model,
     'category' => $category,
-    'department' => $department,
+    'campaign' => $campaign,
     'ideaType' => $ideaType,
 ]) ?>

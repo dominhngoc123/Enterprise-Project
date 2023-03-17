@@ -37,7 +37,18 @@
                                             </div>
                                             <div class="col-6 mb-3">
                                                 <h6>Department</h6>
-                                                <p class="text-muted"><?= Yii::$app->user->identity->getDepartment()->one()->name; ?></p>
+                                                <p class="text-muted">
+                                                    <?php
+                                                        if (Yii::$app->user->identity->departmentId)
+                                                        {
+                                                            echo Yii::$app->user->identity->getDepartment()->one()->name;
+                                                        }
+                                                        else
+                                                        {
+                                                            echo "";
+                                                        }
+                                                    ?>
+                                                </p>
                                             </div>
                                         </div>
                                         <h6>Address</h6>

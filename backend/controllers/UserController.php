@@ -88,9 +88,20 @@ class UserController extends Controller
         $role = array(UserRolesConstant::ADMIN => 'Admin' , UserRolesConstant::QA_COORDINATOR => 'QA Coordinator', UserRolesConstant::QA_MANAGER =>'QA Manager', UserRolesConstant::STAFF => 'Staff');
         $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                Yii::$app->session->setFlash('success', 'Successfully create user');
-                return $this->redirect(['view', 'id' => $model->id]);              
+            if ($model->load($this->request->post())) {
+                if ($model->role == UserRolesConstant::ADMIN || $model->role == UserRolesConstant::QA_MANAGER)
+                {
+                    $model->departmentId = null;
+                }
+                if ($model->save())
+                {
+                    Yii::$app->session->setFlash('success', 'Successfully create user');
+                    return $this->redirect(['view', 'id' => $model->id]);    
+                }
+                else
+                {
+                    Yii::$app->session->setFlash('error', 'Some errors occur when create new user');
+                }                         
             }
         } else {
             $model->loadDefaultValues();

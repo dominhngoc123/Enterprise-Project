@@ -91,6 +91,7 @@ class m130524_201442_init extends Migration
             'campaignId' => $this->integer(),
             'upvote_count' => $this->integer(),
             'downvote_count' => $this->integer(),
+            'view_count' => $this->integer(),
             'post_type' => $this->smallInteger()->notNull()->defaultValue(common\models\constant\IdeaTypeConstant::PUBLIC),
             'status' => $this->smallInteger()->notNull()->defaultValue(common\models\constant\StatusConstant::ACTIVE),
             'created_at' => $this->string(),

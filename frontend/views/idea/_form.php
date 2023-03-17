@@ -19,21 +19,7 @@ use kartik\switchinput\SwitchInput;
             <div class="col col-md-6 col-lg-6 col-sm-12">
                 <?= $form->field($model, 'categoryId')->widget(Select2::classname(), [
                     'data' => $category,
-                    'options' => ['placeholder' => 'Select a category ...'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ],
-                ]) ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-md-6 col-lg-6 col-sm-12">
-                <?= $form->field($model, 'departmentId')->widget(Select2::classname(), [
-                    'data' => $department,
-                    'options' => ['placeholder' => 'Select an department ...'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ],
+                    'options' => ['placeholder' => 'Select a category ...']
                 ]) ?>
             </div>
             <div class="col col-md-6 col-lg-6 col-sm-12">
@@ -41,7 +27,14 @@ use kartik\switchinput\SwitchInput;
                 <?= $form->field($model, 'post_type')->widget(SwitchInput::classname(), [])->label(false); ?>
             </div>
         </div>
-
+        <div class="row">
+            <div class="col col-md-6 col-lg-6 col-sm-12">
+                <?= $form->field($model, 'campaignId')->widget(Select2::classname(), [
+                    'data' => $campaign,
+                    'options' => ['placeholder' => 'Select a campaign ...']
+                ]) ?>
+            </div>
+        </div>
         <?= $form->field($model, 'title')->textarea(['rows' => 4]) ?>
 
         <?= $form->field($model, 'content')->widget(CKEditor::className(), [
@@ -107,14 +100,14 @@ use kartik\switchinput\SwitchInput;
                 <a href="#" data-toggle="modal" data-target="#terms-conditions-modal">Terms and Conditions</a>
             </div>
             <div class="form-group">
-                <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success disabled', 'id' => 'submit-idea' , 'style' => ['width' => '100%']]) ?>
+                <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success disabled', 'id' => 'submit-idea', 'style' => ['width' => '100%']]) ?>
             </div>
-        <?php else:?>
+        <?php else : ?>
             <div class="form-group">
-                <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'id' => 'submit-idea' , 'style' => ['width' => '100%']]) ?>
+                <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'id' => 'submit-idea', 'style' => ['width' => '100%']]) ?>
             </div>
         <?php endif; ?>
-        
+
         <?php ActiveForm::end(); ?>
 
 

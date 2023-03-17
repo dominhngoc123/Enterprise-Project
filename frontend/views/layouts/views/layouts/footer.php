@@ -1,5 +1,5 @@
-<footer class="section-sm pb-0 border-top border-default">
-      <div class="container">
+<footer class="section-sm border-top border-default">
+      <div class="container-footer">
          <div class="row justify-content-between">
             <div class="col-md-3 mb-4">
                <a class="mb-4 d-block" href="index.html">

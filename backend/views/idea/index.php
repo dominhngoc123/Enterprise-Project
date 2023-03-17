@@ -131,9 +131,10 @@ $this->params['breadcrumbs'][] = $this->title;
             //'created_by',
             //'updated_at',
             //'updated_by',
+            
             [
                 'class' => ActionColumn::className(),
-                'template' => '{view} {update} {update-status} {delete}',
+                'template' => '{view}&nbsp;&nbsp;&nbsp;&nbsp;{update}&nbsp;&nbsp;&nbsp;&nbsp;{delete}',
                 'buttons' => [
                     'update-status' => function ($url, $model) {
                         if ($model->status == StatusConstant::ACTIVE) {
@@ -154,12 +155,34 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Url::toRoute([$action, 'id' => $model->id]);
                 }
             ],
+            [
+                'class' => ActionColumn::className(),
+                'template' => '{update-status}',
+                'buttons' => [
+                    'update-status' => function ($url, $model) {
+                        if ($model->status == StatusConstant::ACTIVE) {
+                            return Html::a('<span class="fa fa-toggle-off"></span>', $url, [
+
+                                'title' => Yii::t('yii', 'Deactive'),
+                            ]);
+                        } else {
+                            return Html::a('<span class="fa fa-toggle-on"></span>', $url, [
+
+                                'title' => Yii::t('yii', 'Active'),
+                            ]);
+                        }
+                    }
+                ],
+                'headerOptions' => ['style' => 'width:5%'],
+                'urlCreator' => function ($action, Idea $model, $key, $index, $column) {
+                    return Url::toRoute([$action, 'id' => $model->id]);
+                }
+            ],
         ];
     ?>
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Idea'), ['create'], ['class' => 'btn btn-success']) ?>
+        <!-- <?= Html::a(Yii::t('app', 'Create Idea'), ['create'], ['class' => 'btn btn-success']) ?> -->
         <?= Html::a('<i class="fa fa-download"></i> Download attachments', ['idea/download-zip'], ['class' => 'btn btn-success', 'title' => 'Download attachments']) ?>
         <?php
         
@@ -193,7 +216,6 @@ $this->params['breadcrumbs'][] = $this->title;
                        max-height: 250px;  overflow-x: hidden; padding-left: 20px',
             ]
         ]); ?>
-    </p>
 
     <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); 

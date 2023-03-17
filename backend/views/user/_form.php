@@ -23,6 +23,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
+
+
     <div class="row">
         <div class="col col-md-6 col-lg-6 col-sm-12">
             <?= $form->field($model, 'dob')->widget(DatePicker::classname(), [
@@ -30,18 +33,6 @@ use yii\widgets\ActiveForm;
                     'format' => 'dd-M-yyyy',
                     'todayHighlight' => true
                 ]
-            ]) ?>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col col-md-6 col-lg-6 col-sm-12">
-            <?= $form->field($model, 'departmentId')->widget(Select2::classname(), [
-                'data' => $department,
-                'options' => ['placeholder' => 'Select department ...'],
-                'pluginOptions' => [
-                    'allowClear' => false
-                ],
             ]) ?>
         </div>
         <div class="col col-md-6 col-lg-6 col-sm-12">
@@ -55,6 +46,19 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 
+    <div class="row" id="add_department">
+        <div class="col col-md-6 col-lg-6 col-sm-12">
+            <?= $form->field($model, 'departmentId')->widget(Select2::classname(), [
+                'data' => $department,
+                'options' => ['placeholder' => 'Select department ...'],
+                'pluginOptions' => [
+                    'allowClear' => false
+                ],
+            ]) ?>
+        </div>
+
+    </div>
+
     <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
@@ -62,5 +66,20 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?php ActiveForm::end(); ?>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(document).ready(function() {
+            $('#user-role').on('change', function() {
+                let role = $(this).val();
+                if (role == 0 || role == 1) {
+                    $('#add_department').hide();
+                } else {
+                    $('#add_department').show();
+                }
+            });
+            $('#user-phone_number').on('keyup', function() {
+                $(this).val($(this).val().replace(/\D/g, ''));
+            });
+        });
+    </script>
 </div>

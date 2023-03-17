@@ -11,7 +11,7 @@ return [
         'phone_number' => '0941900193',
         'avatar' => null,
         'address' => 'Hà Nội',
-        'departmentId' => 1,
+        'departmentId' => null,
         'auth_key' => '$2y$13$iTkZeIYcbrCwQxVLnpueneajQUrIJZG2kntbzDOTGyEX2hV973Nkq',
         'status' => 1,
         'role' => 0,

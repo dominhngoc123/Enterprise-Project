@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use backend\helpers\DownloadHelper;
 use common\helpers\EmailHelper;
 use common\models\constant\ConfigParams;
+use common\models\constant\ReactionTypeConstant;
 use common\models\constant\StatusConstant;
 use frontend\models\Campaign;
 use frontend\models\Attachment;
@@ -77,7 +78,7 @@ class IdeaController extends Controller
      */
     public function actionIndex()
     {
-        $query = Idea::find()->where(['=', 'status', 1])->andWhere(['parentId' => NULL]);
+        $query = Idea::find()->where(['=', 'status', 1])->andWhere(['parentId' => NULL])->orderBy(['created_at' => SORT_DESC]);
         $countQuery = clone $query;
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
         $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
@@ -95,14 +96,43 @@ class IdeaController extends Controller
      */
     public function actionView($id)
     {
+        $this->increaseViewCount($id);
         $new_comment = new Idea();
         $reaction = Reaction::find()->where(['=', 'userId', Yii::$app->user->identity->id])->andWhere(['=', 'ideaId', $id])->one();
         $comments = Idea::find()->where(['=',  'parentId', $id])->andWhere(['=', 'status', StatusConstant::ACTIVE])->all();
+        $upvote_users = User::find()->select(['user.full_name'])->innerJoin('reaction r', 'user.id = r.userId')->where(['r.ideaId' => $id])->andWhere(['r.status' => ReactionTypeConstant::LIKE])->all();
+        $downvote_users = User::find()->select(['user.full_name'])->innerJoin('reaction r', 'user.id = r.userId')->where(['r.ideaId' => $id])->andWhere(['r.status' => ReactionTypeConstant::UNLIKE])->all();
+        $upvote_data = "";
+        $downvote_data = "";
+        if ($upvote_users)
+        {
+            $count = 1;
+            foreach ($upvote_users as $user)
+            {
+                $upvote_data .= $user->full_name;
+                $upvote_data .= ", ";   
+            }
+            $upvote_data = substr($upvote_data, 0, strlen($upvote_data) - 2);
+        }
+        if ($downvote_users)
+        {
+            $count = 1;
+            foreach ($downvote_users as $user)
+            {
+                $downvote_data .= $user->full_name;
+                $downvote_data .= ", "; 
+            }
+            $downvote_data = substr($downvote_data, 0, strlen($downvote_data) - 2);
+        }
+        // $upvote_tooltip = implode("\n", $upvote_users);
+        // $downvote_tooltip = implode("\n", $downvote_users);
         return $this->render('view', [
             'model' => $this->findModel($id),
             'reaction' => $reaction,
             'new_comment' => $new_comment,
-            'comments' => $comments
+            'comments' => $comments,
+            'upvote_data' => $upvote_data,
+            'downvote_data' => $downvote_data
         ]);
     }
 
@@ -124,15 +154,7 @@ class IdeaController extends Controller
                 $model->upvote_count = 0;
                 $model->downvote_count = 0;
                 $files = UploadedFile::getInstances($model, 'file');
-                $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
-                $currentDate = new \yii\db\Expression('NOW()');
-                $campaign = Campaign::find()->where(['>=', "STR_TO_DATE(end_date, '%d-%m-%Y')", $currentDate])->andWhere(['<=', "STR_TO_DATE(start_date, '%d-%m-%Y')", $currentDate])->andWhere(['=', 'status', StatusConstant::ACTIVE])->andWhere(['<>', 'id', 1])->one();
-                if ($campaign) {
-                    $model->campaignId = $campaign->id;
-                } else {
-                    Yii::$app->session->setFlash('warning', 'No campaign available. This topic will be moved to general campaign');
-                    $model->campaignId = 1;
-                }
+                $model->departmentId = Yii::$app->user->identity->departmentId;
                 if ($model->save()) {
                     EmailHelper::emailWhenSubmitIdea($model);
                     $folder_name = 'idea_' . time();
@@ -159,8 +181,8 @@ class IdeaController extends Controller
         }
 
         $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
-        $campaign = Campaign::find()->where(['status' => StatusConstant::ACTIVE])->all();
-        $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
+        $currentDate = new \yii\db\Expression('NOW()');
+        $campaign = Campaign::find()->where(['>=', "STR_TO_DATE(closure_date, '%d-%m-%Y')", $currentDate])->andWhere(['<=', "STR_TO_DATE(start_date, '%d-%m-%Y')", $currentDate])->andWhere(['=', 'status', StatusConstant::ACTIVE])->all();
 
         return $this->render('create', [
             'all_files' => $all_files,
@@ -169,7 +191,6 @@ class IdeaController extends Controller
             'model' => $model,
             'category' => ArrayHelper::map($category, 'id', 'name'),
             'campaign' => ArrayHelper::map($campaign, 'id', 'name'),
-            'department' => ArrayHelper::map($department, 'id', 'name'),
             'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
         ]);
     }
@@ -192,8 +213,6 @@ class IdeaController extends Controller
                         EmailHelper::emailWhenCreateComment($idea, $comment);
                     }
                 } else {
-                    var_dump($comment->getErrors());
-                    die();
                     Yii::$app->session->setFlash('error', 'Cannot create new comment');
                 }
             }
@@ -256,7 +275,8 @@ class IdeaController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
         $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
-        $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
+        $currentDate = new \yii\db\Expression('NOW()');
+        $campaign = Campaign::find()->where(['>=', "STR_TO_DATE(closure_date, '%d-%m-%Y')", $currentDate])->andWhere(['<=', "STR_TO_DATE(start_date, '%d-%m-%Y')", $currentDate])->andWhere(['=', 'status', StatusConstant::ACTIVE])->all();
 
         return $this->render('update', [
             'all_files' => $all_files,
@@ -264,7 +284,7 @@ class IdeaController extends Controller
             'files_type' => $files_type,
             'model' => $model,
             'category' => ArrayHelper::map($category, 'id', 'name'),
-            'department' => ArrayHelper::map($department, 'id', 'name'),
+            'campaign' => ArrayHelper::map($campaign, 'id', 'name'),
             'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
         ]);
     }
@@ -352,6 +372,13 @@ class IdeaController extends Controller
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 
+    private function increaseViewCount($id)
+    {
+        $model = $this->findModel($id);
+        $model->view_count++;
+        $model->save();
+    }
+
     private function sendEmailToCoordinator($idea)
     {
         $send_from = ConfigParams::SMTP_EMAIL;
@@ -372,6 +399,18 @@ class IdeaController extends Controller
     public function actionGetIdeasByDepartment($departmentId)
     {
         $query = Idea::find()->where(['=', 'departmentId', $departmentId])->andWhere(['=', 'status', StatusConstant::ACTIVE]);
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
+        $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
+        return $this->render('index', [
+            'ideas' => $ideas,
+            'pages' => $pages
+        ]);
+    }
+
+    public function actionGetIdeasByCampaign($campaignId)
+    {
+        $query = Idea::find()->where(['=', 'campaignId', $campaignId])->andWhere(['=', 'status', StatusConstant::ACTIVE]);
         $countQuery = clone $query;
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
         $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();

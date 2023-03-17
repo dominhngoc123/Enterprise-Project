@@ -17,6 +17,7 @@ use Yii;
  * @property int|null $departmentId
  * @property int|null $upvote_count
  * @property int|null $downvote_count
+ * @property int|null $view_count
  * @property int|null $post_type
  * @property int $status
  * @property string|null $created_at
@@ -53,7 +54,7 @@ class Idea extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'content'], 'string'],
-            [['parentId', 'userId', 'categoryId', 'campaignId', 'upvote_count', 'downvote_count', 'post_type', 'status'], 'integer'],
+            [['parentId', 'userId', 'categoryId', 'campaignId', 'upvote_count', 'downvote_count', 'view_count', 'post_type', 'status'], 'integer'],
             [['created_at', 'created_by', 'updated_at', 'updated_by'], 'string', 'max' => 255],
             [['campaignId'], 'exist', 'skipOnError' => true, 'targetClass' => campaign::class, 'targetAttribute' => ['campaignId' => 'id']],
             [['parentId'], 'exist', 'skipOnError' => true, 'targetClass' => Idea::class, 'targetAttribute' => ['parentId' => 'id']],
@@ -80,6 +81,7 @@ class Idea extends \yii\db\ActiveRecord
             'campaignId' => Yii::t('app', 'Campaign ID'),
             'upvote_count' => Yii::t('app', 'Upvote Count'),
             'downvote_count' => Yii::t('app', 'Downvote Count'),
+            'view_count' => Yii::t('app', 'View Count'),
             'post_type' => Yii::t('app', 'Post Type'),
             'status' => Yii::t('app', 'Status'),
             'created_at' => Yii::t('app', 'Created At'),

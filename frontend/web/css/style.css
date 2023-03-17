@@ -1082,6 +1082,7 @@ img.profile-photo-sm {
   bottom: 100px;
   right: 5px;
   border-radius: 10em;
+  z-index: 1;
 }
 
 .fixedbutton:hover {

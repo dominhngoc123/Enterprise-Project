@@ -61,7 +61,7 @@ $this->registerJsFile($publishedRes[1] . '/control_sidebar.js', ['depends' => '\
 
     <section class="section">
         <div class="container">
-            <div class="content-header">
+            <!-- <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-12">
@@ -73,18 +73,18 @@ $this->registerJsFile($publishedRes[1] . '/control_sidebar.js', ['depends' => '\
                                 ]
                             ]);
                             ?>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
-            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
             <?php if (Yii::$app->controller->id === 'user' && Yii::$app->controller->action->id === 'author') : ?>
-                <div class="row">
+                <div class="row" style="margin-top: 20px;">
                     <div class="col-lg-12 mb-5 mb-lg-0">
                         <?= $this->render('content', ['content' => $content, 'assetDir' => $assetDir]) ?>
                     </div>
                 </div>
             <?php else : ?>
-                <div class="row">
+                <div class="row" style="margin-top: 20px;">
                     <div class="col-lg-9  mb-5 mb-lg-0">
                         <?= $this->render('content', ['content' => $content, 'assetDir' => $assetDir]) ?>
                     </div>
@@ -115,6 +115,7 @@ $this->registerJsFile($publishedRes[1] . '/control_sidebar.js', ['depends' => '\
 
     <!-- Main Script -->
     <script src="../js/script.js"></script>
+
 </body>
 
 </html>

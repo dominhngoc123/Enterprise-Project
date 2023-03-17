@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <section class="section-sm border-bottom">
     <div class="container">
         <div class="row">
-            <div class="col-12">
+            <!-- <div class="col-12">
                 <div class="title-bordered mb-5 d-flex align-items-center">
                     <h1 class="h4"><?= $model->full_name ?></h1>
                     <ul class="list-inline social-icons ml-auto mr-3 d-none d-sm-block">
@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </li>
                     </ul>
                 </div>
-            </div>
+            </div> -->
             <div class="container">
                 <div class="row d-flex justify-content-center align-items-center h-100">
                     <div class="col col-lg-12 mb-5 mb-lg-12">
@@ -60,7 +60,18 @@ $this->params['breadcrumbs'][] = $this->title;
                                         </div>
                                         <div class="col-6 mb-3">
                                             <h6>Department</h6>
-                                            <p class="text-muted"><?= Yii::$app->user->identity->getDepartment()->one()->name; ?></p>
+                                            <p class="text-muted">
+                                                <?php
+                                                    if (Yii::$app->user->identity->departmentId)
+                                                    {
+                                                        echo Yii::$app->user->identity->getDepartment()->one()->name;
+                                                    }
+                                                    else
+                                                    {
+                                                        echo "";
+                                                    }
+                                                ?>
+                                            </p>
                                         </div>
                                     </div>
                                     <h6>Address</h6>
