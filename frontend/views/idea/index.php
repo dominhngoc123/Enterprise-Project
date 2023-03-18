@@ -2,6 +2,7 @@
 
 use common\models\constant\IdeaTypeConstant;
 use frontend\models\Category;
+use frontend\models\Department;
 use frontend\models\Idea;
 use frontend\models\User;
 use yii\bootstrap4\LinkPager;
@@ -52,7 +53,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             echo "$date $time";
                             ?>
                         </li>
-                        <li class="list-inline-item">Category : <a href="<?= Url::to(['idea/get-ideas-by-category', 'categoryId' => $idea->categoryId]); ?>" class="ml-1"><?= Category::find()->where(['=', 'id', $idea->categoryId])->one()->name; ?></a>
+                        <li class="list-inline-item">Category : <a href="<?= Url::to(['idea/get-ideas-by-category', 'categoryId' => $idea->categoryId]); ?>" class="ml-1"><?php $category = Category::find()->where(['=', 'id', $idea->categoryId])->one(); if ($category) { echo $category->name; } ?></a>
+                        </li>
+                        <li class="list-inline-item">Department : <a href="<?= Url::to(['idea/get-ideas-by-department', 'departmentId' => $idea->departmentId]); ?>" class="ml-1"><?php $department = Department::find()->where(['=', 'id', $idea->departmentId])->one(); if ($department) { echo $department->name; }; ?></a>
                         </li>
                     </ul>
                     <div class="snip_text mb-10"><?= htmlspecialchars_decode(stripslashes($idea->content)); ?></div>

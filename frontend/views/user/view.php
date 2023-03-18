@@ -112,7 +112,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </li>
                                 <li class="list-inline-item">Posted at:
                                     <?php
-                                    date_default_timezone_set('UTC');
+                                    date_default_timezone_set('Asia/Ho_Chi_Minh');
                                     $posted_at = strtotime($idea->created_at);
 
                                     $date = date('Y-m-d', $posted_at);

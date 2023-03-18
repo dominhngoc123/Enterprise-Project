@@ -96,9 +96,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="idea-view">
     <section class="section post-content">
         <?php
-        $now = (new DateTime())->format('dd-mm-YYYY');
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $now = new DateTime();
         $campaign = Campaign::find()->where(['=', 'id', $model->campaignId])->andWhere(['=', 'status', StatusConstant::ACTIVE])->one();
-        if (Yii::$app->user->identity->id == $model->userId && $campaign->start_date <= $now && $campaign->closure_date >= $now) :
+        if (Yii::$app->user->identity->id == $model->userId && strtotime($campaign->start_date) <= strtotime($now->format('d-m-Y')) && strtotime($campaign->closure_date) >= strtotime($now->format('d-m-Y'))):
         ?>
             <div id="menu-wrap">
                 <input type="checkbox" class="toggler" />
@@ -175,7 +176,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php endforeach; ?>
                     <?php endif; ?>
                     <?php
-                    if ($campaign->end_date >= $now) : ?>
+                    if (strtotime($campaign->end_date) >= strtotime($now->format('d-m-Y'))) : ?>
                     <?php $form = ActiveForm::begin([
                         'id' => 'create-comment-form',
                         'action' => Url::to(['idea/comment', 'ideaId' => $model->id])

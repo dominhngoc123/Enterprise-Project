@@ -78,11 +78,13 @@ class IdeaController extends Controller
      */
     public function actionIndex()
     {
+        $searchModel = new IdeaSearch();
         $query = Idea::find()->where(['=', 'status', 1])->andWhere(['parentId' => NULL])->orderBy(['created_at' => SORT_DESC]);
         $countQuery = clone $query;
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
         $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'ideas' => $ideas,
             'pages' => $pages
         ]);
@@ -110,7 +112,7 @@ class IdeaController extends Controller
             foreach ($upvote_users as $user)
             {
                 $upvote_data .= $user->full_name;
-                $upvote_data .= ", ";   
+                $upvote_data .= ", ";
             }
             $upvote_data = substr($upvote_data, 0, strlen($upvote_data) - 2);
         }
