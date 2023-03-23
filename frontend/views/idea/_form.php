@@ -23,12 +23,6 @@ use kartik\switchinput\SwitchInput;
                 ]) ?>
             </div>
             <div class="col col-md-6 col-lg-6 col-sm-12">
-                <label class="control-label">Anonymous</label>
-                <?= $form->field($model, 'post_type')->widget(SwitchInput::classname(), [])->label(false); ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-md-6 col-lg-6 col-sm-12">
                 <?= $form->field($model, 'campaignId')->widget(Select2::classname(), [
                     'data' => $campaign,
                     'options' => ['placeholder' => 'Select a campaign ...']
@@ -92,12 +86,18 @@ use kartik\switchinput\SwitchInput;
 
         </div>
         <?php if ($model->isNewRecord) : ?>
-            <div class="terms-conditions ml-10">
-                <?= $form->field($model, 'allowTermsConditions', [
-                    'template' => '{input}',
-                    'options' => ['tag' => false, 'required' => true]
-                ])->checkbox()->label(false) ?>
-                <a href="#" data-toggle="modal" data-target="#terms-conditions-modal">Terms and Conditions</a>
+            <div class="terms-conditions ml-10 row">
+                <div class="col col-md-12 col-lg-12 col-sm-12">
+                    <label class="control-label">Anonymous</label>
+                    <?= $form->field($model, 'post_type')->widget(SwitchInput::classname(), [])->label(false); ?>
+                </div>
+                <div class="col col-md-12 col-lg-12 col-sm-12">
+                    <?= $form->field($model, 'allowTermsConditions', [
+                        'template' => '{input}',
+                        'options' => ['tag' => false, 'required' => true]
+                    ])->checkbox()->label(false) ?>
+                    <a href="#" data-toggle="modal" data-target="#terms-conditions-modal">Terms and Conditions</a>
+                </div>
             </div>
             <div class="form-group">
                 <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success disabled', 'id' => 'submit-idea', 'style' => ['width' => '100%']]) ?>

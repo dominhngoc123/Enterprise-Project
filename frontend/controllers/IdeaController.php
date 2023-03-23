@@ -106,23 +106,19 @@ class IdeaController extends Controller
         $downvote_users = User::find()->select(['user.full_name'])->innerJoin('reaction r', 'user.id = r.userId')->where(['r.ideaId' => $id])->andWhere(['r.status' => ReactionTypeConstant::UNLIKE])->all();
         $upvote_data = "";
         $downvote_data = "";
-        if ($upvote_users)
-        {
+        if ($upvote_users) {
             $count = 1;
-            foreach ($upvote_users as $user)
-            {
+            foreach ($upvote_users as $user) {
                 $upvote_data .= $user->full_name;
                 $upvote_data .= ", ";
             }
             $upvote_data = substr($upvote_data, 0, strlen($upvote_data) - 2);
         }
-        if ($downvote_users)
-        {
+        if ($downvote_users) {
             $count = 1;
-            foreach ($downvote_users as $user)
-            {
+            foreach ($downvote_users as $user) {
                 $downvote_data .= $user->full_name;
-                $downvote_data .= ", "; 
+                $downvote_data .= ", ";
             }
             $downvote_data = substr($downvote_data, 0, strlen($downvote_data) - 2);
         }
@@ -162,14 +158,19 @@ class IdeaController extends Controller
                     $folder_name = 'idea_' . time();
                     FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
                     foreach ($files as $file) {
-                        $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
-                        $file->saveAs($url);
-                        $attachment = new Attachment();
-                        $attachment->url = $url;
-                        $attachment->file_type = $this->getFileType($file->extension);
-                        $attachment->original_name = $file->name;
-                        $attachment->ideaId = $model->id;
-                        $attachment->save();
+                        $uploaded_filename = Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                        $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . $uploaded_filename;
+                        $isUploaded = $file->saveAs($url);
+                        if ($isUploaded) {
+                            $attachment = new Attachment();
+                            $attachment->url = Url::to('@backend_alias') . '/uploads/' . $folder_name . '/' . $uploaded_filename;
+                            $attachment->file_type = $this->getFileType($file->extension);
+                            $attachment->original_name = $file->name;
+                            $attachment->ideaId = $model->id;
+                            $attachment->save();
+                        } else {
+                            Yii::$app->session->setFlash('warning', 'Error when upload file: ' . $file->name);
+                        }
                     }
                     Yii::$app->session->setFlash('success', 'Create new idea success');
                 } else {
@@ -240,8 +241,8 @@ class IdeaController extends Controller
         if ($uploaded_file) {
             $folder_url = substr(end($uploaded_file)->url, 0, strripos(end($uploaded_file)->url, '/'));
             foreach ($uploaded_file as $file) {
-                $all_files[] = Url::base(TRUE) . "/" . $file->url;
-                $obj = (object) array('caption' => $file->original_name, 'url' => "/index.php?r=idea%2Fdelete-file&id=$file->id", 'key' => $file->id, 'type' => $file->file_type);
+                $all_files[] = $file->url;
+                $obj = (object) array('caption' => $file->original_name, 'url' => Url::to(['idea/delete-file', 'id' => $file->id]), 'key' => $file->id, 'type' => $file->file_type);
                 $files_type[] = $file->file_type;
                 $all_files_preview[] = $obj;
             }
@@ -259,20 +260,25 @@ class IdeaController extends Controller
             $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
             $model->save();
             foreach ($files as $file) {
+                $uploaded_filename = Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
                 if ($folder_url != '' && file_exists($folder_url)) {
-                    $url = $folder_url . '/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                    $url = $folder_url . '/' . $uploaded_filename;
                 } else {
                     $folder_name = 'idea_' . time();
                     FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
-                    $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                    $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . $uploaded_filename;
                 }
-                $file->saveAs($url);
-                $attachment = new Attachment();
-                $attachment->url = $url;
-                $attachment->file_type = $this->getFileType($file->extension);
-                $attachment->original_name = $file->name;
-                $attachment->ideaId = $model->id;
-                $attachment->save();
+                $isUploaded = $file->saveAs($url);
+                if ($isUploaded) {
+                    $attachment = new Attachment();
+                    $attachment->url = Url::to('@backend_alias') . '/uploads/' . $folder_name . '/' . $uploaded_filename;
+                    $attachment->file_type = $this->getFileType($file->extension);
+                    $attachment->original_name = $file->name;
+                    $attachment->ideaId = $model->id;
+                    $attachment->save();
+                } else {
+                    Yii::$app->session->setFlash('warning', 'Error when upload file: ' . $file->name);
+                }
             }
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -296,8 +302,10 @@ class IdeaController extends Controller
         $file = Attachment::findOne($id);
         $check = $file->delete();
         if ($check) {
-            unlink($file->url);
+            $file_location = Url::to('@backend') . '/web/' . substr($file->url, strripos($file->url, '/uploads'), strlen($file->url));
+            unlink($file_location);
         }
+        return '{}';
     }
 
     public function deleteFiles($id)

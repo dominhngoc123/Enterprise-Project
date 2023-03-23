@@ -20,10 +20,10 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = [
         'class' => \yii\gii\Module::class,
         'generators' => [
-        'fixture' => [
-            'class' => 'elisdn\gii\fixture\Generator',
+            'fixture' => [
+                'class' => 'elisdn\gii\fixture\Generator',
+            ],
         ],
-    ],
     ];
 }
 

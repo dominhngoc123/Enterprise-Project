@@ -146,6 +146,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="content">
                         <?= htmlspecialchars_decode(stripslashes($model->content)); ?>
                     </div>
+                    <?php $attachments = $model->getAttachments()->all(); ?>
+                    <?php if ($attachments): ?>
+                    <div class="line-divider"></div>
+                    <div class="download-attachment ml-20">
+                        <?php foreach($attachments as $attachment): ?>
+                            <div class="w-100"><a target="_blank" href="<?= $attachment->url ?>"><?= $attachment->original_name ?></a></div>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
                     <div class="line-divider"></div>
                     <div class="reaction">
                         <?php if ($reaction && $reaction->status == ReactionTypeConstant::LIKE): ?>

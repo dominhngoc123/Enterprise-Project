@@ -60,14 +60,14 @@ class IdeaController extends Controller
                         [
                             'allow' => true,
                             'matchCallback' => function ($rule, $action) {
-                                return !\Yii::$app->user->isGuest 
+                                return !\Yii::$app->user->isGuest
                                     && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN;
                             },
                         ],
                     ],
                 ],
             ]
-            
+
         );
     }
 
@@ -124,14 +124,19 @@ class IdeaController extends Controller
                 $folder_name = 'idea_' . time();
                 FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
                 foreach ($files as $file) {
-                    $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
-                    $file->saveAs($url);
-                    $attachment = new Attachment();
-                    $attachment->url = $url;
-                    $attachment->file_type = $this->getFileType($file->extension);
-                    $attachment->original_name = $file->name;
-                    $attachment->ideaId = $model->id;
-                    $attachment->save();
+                    $uploaded_filename = Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                    $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . $uploaded_filename;
+                    $isUploaded = $file->saveAs($url);
+                    if ($isUploaded) {
+                        $attachment = new Attachment();
+                        $attachment->url = Url::to('@backend_alias') . '/uploads/' . $folder_name . '/' . $uploaded_filename;
+                        $attachment->file_type = $this->getFileType($file->extension);
+                        $attachment->original_name = $file->name;
+                        $attachment->ideaId = $model->id;
+                        $attachment->save();
+                    } else {
+                        Yii::$app->session->setFlash('warning', 'Error when upload file: ' . $file->name);
+                    }
                 }
                 Yii::$app->session->setFlash('success', 'Successfully create idea');
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -139,7 +144,7 @@ class IdeaController extends Controller
         } else {
             $model->loadDefaultValues();
         }
-        
+
         $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
         $currentDate = new \yii\db\Expression('NOW()');
         $campaign = Campaign::find()->where(['>=', 'end_date', $currentDate])->andWhere(['<=', 'start_date', $currentDate])->andWhere(['=', 'status', StatusConstant::ACTIVE])->all();
@@ -215,20 +220,25 @@ class IdeaController extends Controller
             $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
             $model->save();
             foreach ($files as $file) {
+                $uploaded_filename = Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
                 if ($folder_url != '' && file_exists($folder_url)) {
-                    $url = $folder_url . '/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                    $url = $folder_url . '/' . $uploaded_filename;
                 } else {
                     $folder_name = 'idea_' . time();
                     FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
-                    $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                    $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . $uploaded_filename;
                 }
-                $file->saveAs($url);
-                $attachment = new Attachment();
-                $attachment->url = $url;
-                $attachment->file_type = $this->getFileType($file->extension);
-                $attachment->original_name = $file->name;
-                $attachment->ideaId = $model->id;
-                $attachment->save();
+                $isUploaded = $file->saveAs($url);
+                if ($isUploaded) {
+                    $attachment = new Attachment();
+                    $attachment->url = Url::to('@backend_alias') . '/uploads/' . $folder_name . '/' . $uploaded_filename;
+                    $attachment->file_type = $this->getFileType($file->extension);
+                    $attachment->original_name = $file->name;
+                    $attachment->ideaId = $model->id;
+                    $attachment->save();
+                } else {
+                    Yii::$app->session->setFlash('warning', 'Error when upload file: ' . $file->name);
+                }
             }
             Yii::$app->session->setFlash('success', 'Successfully update idea');
             return $this->redirect(['view', 'id' => $model->id]);
@@ -300,29 +310,19 @@ class IdeaController extends Controller
     public function actionUpdateStatus($id)
     {
         $model = $this->findModel($id);
-        if ($model)
-        {
-            if ($model->status == StatusConstant::ACTIVE)
-            {
+        if ($model) {
+            if ($model->status == StatusConstant::ACTIVE) {
                 $model->status = StatusConstant::INACTIVE;
-                if ($model->save())
-                {
+                if ($model->save()) {
                     Yii::$app->session->setFlash('success', 'Successfully deactive idea');
-                }
-                else 
-                {
+                } else {
                     Yii::$app->session->setFlash('error', 'Cannot deactive idea');
                 }
-            }
-            else
-            {
+            } else {
                 $model->status = StatusConstant::ACTIVE;
-                if ($model->save())
-                {
+                if ($model->save()) {
                     Yii::$app->session->setFlash('success', 'Successfully active idea');
-                }
-                else
-                {
+                } else {
                     Yii::$app->session->setFlash('error', 'Cannot active idea');
                 }
             }
