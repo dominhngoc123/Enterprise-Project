@@ -24,6 +24,7 @@ use Yii;
  * @property string|null $created_by
  * @property string|null $updated_at
  * @property string|null $updated_by
+ * @property string|null $hashtags
  *
  * @property Campaign $campaign
  * @property Campaign $department
@@ -33,11 +34,15 @@ use Yii;
  * @property Idea $parent
  * @property Reaction[] $reactions
  * @property User $user
+ * @property IdeaTag[] $ideaTags
+ * 
  */
 class Idea extends \yii\db\ActiveRecord
 {
 
     public $file;
+    public $hashtag;
+    public $allowTermsConditions;
 
     /**
      * {@inheritdoc}
@@ -47,6 +52,13 @@ class Idea extends \yii\db\ActiveRecord
         return 'idea';
     }
 
+    function attributes()
+    {
+        $attributes = parent::attributes();
+        $attributes[] = 'hashtag';
+        return $attributes;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -54,6 +66,7 @@ class Idea extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'content'], 'string'],
+            [['title', 'content', 'hashtag', 'allowTermsConditions'], 'safe'],
             [['parentId', 'userId', 'categoryId', 'campaignId', 'upvote_count', 'downvote_count', 'view_count', 'post_type', 'status'], 'integer'],
             [['created_at', 'created_by', 'updated_at', 'updated_by'], 'string', 'max' => 255],
             [['campaignId'], 'exist', 'skipOnError' => true, 'targetClass' => campaign::class, 'targetAttribute' => ['campaignId' => 'id']],
@@ -80,6 +93,7 @@ class Idea extends \yii\db\ActiveRecord
             'departmentId' => Yii::t('app', 'Department ID'),
             'campaignId' => Yii::t('app', 'Campaign ID'),
             'upvote_count' => Yii::t('app', 'Upvote Count'),
+            'hashtags' => Yii::t('app', 'Hashtag'),
             'downvote_count' => Yii::t('app', 'Downvote Count'),
             'view_count' => Yii::t('app', 'View Count'),
             'post_type' => Yii::t('app', 'Post Type'),
@@ -91,7 +105,8 @@ class Idea extends \yii\db\ActiveRecord
         ];
     }
 
-    public function beforeSave($insert) {
+    public function beforeSave($insert)
+    {
 
         if ($this->isNewRecord) {
             $this->created_at = new \yii\db\Expression('NOW()');
@@ -173,6 +188,16 @@ class Idea extends \yii\db\ActiveRecord
     public function getReactions()
     {
         return $this->hasMany(Reaction::class, ['ideaId' => 'id']);
+    }
+
+    /**
+     * Gets query for [[IdeaTag]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIdeatags()
+    {
+        return $this->hasMany(IdeaTag::class, ['ideaId' => 'id']);
     }
 
     /**

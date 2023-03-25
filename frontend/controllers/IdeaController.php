@@ -11,8 +11,10 @@ use frontend\models\Campaign;
 use frontend\models\Attachment;
 use frontend\models\Category;
 use frontend\models\Department;
+use frontend\models\Hashtag;
 use frontend\models\Idea;
 use frontend\models\IdeaSearch;
+use frontend\models\IdeaTag;
 use frontend\models\Reaction;
 use frontend\models\UploadForm;
 use frontend\models\User;
@@ -152,9 +154,27 @@ class IdeaController extends Controller
                 $model->upvote_count = 0;
                 $model->downvote_count = 0;
                 $files = UploadedFile::getInstances($model, 'file');
+                $hashtags = $this->request->post()['Idea']['hashtag'];
                 $model->departmentId = Yii::$app->user->identity->departmentId;
                 if ($model->save()) {
                     EmailHelper::emailWhenSubmitIdea($model);
+                    $hashtags = explode(",", $hashtags);
+                    if ($hashtags) {
+                        $existHashtags = Hashtag::find()->all();
+                        foreach ($hashtags as $tag) {
+                            $tag = trim($tag);
+                            $temp = $this->getExistingTag($tag, $existHashtags);
+                            $hashtag = $temp ? $temp : new Hashtag();
+                            if (!$temp) {
+                                $hashtag->name = $tag;
+                                $hashtag->save();
+                            }
+                            $idea_tag = new IdeaTag();
+                            $idea_tag->ideaId = $model->id;
+                            $idea_tag->hashtagId = $hashtag->id;
+                            $idea_tag->save();
+                        }
+                    }
                     $folder_name = 'idea_' . time();
                     FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
                     foreach ($files as $file) {
@@ -198,6 +218,15 @@ class IdeaController extends Controller
         ]);
     }
 
+    private function getExistingTag($tag, $list)
+    {
+        foreach ($list as $item) {
+            if ($item->name === $tag)
+                return $item;
+        }
+        return null;
+    }
+
     public function actionComment($ideaId)
     {
         $comment = new Idea();
@@ -236,6 +265,8 @@ class IdeaController extends Controller
         $all_files_preview = array();
         $files_type = array();
         $model = $this->findModel($id);
+        $temp = Hashtag::find()->select(['name'])->innerJoin('idea_tag', 'idea_tag.hashtagId = hashtag.id')->where(['=', 'idea_tag.ideaId', $model->id])->andWhere(['=', 'hashtag.status', StatusConstant::ACTIVE])->asArray()->column();
+        $model->hashtag = implode(", ", $temp);
         $uploaded_file = Attachment::find()->where(['=', 'ideaId', $model->id])->all();
         $folder_url = "";
         if ($uploaded_file) {
@@ -259,6 +290,29 @@ class IdeaController extends Controller
             $files = UploadedFile::getInstances($model, 'file');
             $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
             $model->save();
+            $hashtags = $this->request->post()['Idea']['hashtag'];
+            $hashtags = explode(",", $hashtags);
+            if ($hashtags) {
+                $existHashtags = Hashtag::find()->all();
+                \Yii::$app
+                    ->db
+                    ->createCommand()
+                    ->delete('idea_tag', ['ideaId' => $id])
+                    ->execute();
+                foreach ($hashtags as $tag) {
+                    $tag = trim($tag);
+                    $temp = $this->getExistingTag($tag, $existHashtags);
+                    $hashtag = $temp ? $temp : new Hashtag();
+                    if (!$temp) {
+                        $hashtag->name = $tag;
+                        $hashtag->save();
+                    }
+                    $idea_tag = new IdeaTag();
+                    $idea_tag->ideaId = $model->id;
+                    $idea_tag->hashtagId = $hashtag->id;
+                    $idea_tag->save();
+                }
+            }
             foreach ($files as $file) {
                 $uploaded_filename = Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
                 if ($folder_url != '' && file_exists($folder_url)) {
@@ -362,6 +416,11 @@ class IdeaController extends Controller
             ->createCommand()
             ->delete('reaction', ['ideaId' => $id])
             ->execute();
+        \Yii::$app
+            ->db
+            ->createCommand()
+            ->delete('idea_tag', ['ideaId' => $id])
+            ->execute();
         $this->findModel($id)->delete();
         return $this->redirect(['index']);
     }
@@ -448,6 +507,19 @@ class IdeaController extends Controller
         $query->andFilterWhere(['like', 'title', $inputSearch])
             ->orFilterWhere(['like', 'content', $inputSearch]);
         $query->andwhere(['=', 'status', StatusConstant::ACTIVE])->andWhere(['parentId' => NULL]);
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
+        $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
+        return $this->render('index', [
+            'ideas' => $ideas,
+            'pages' => $pages
+        ]);
+    }
+
+    public function actionGetIdeasByHashtag($hashtag)
+    {
+        $hashtag = "#" . $hashtag;
+        $query = Idea::find()->innerJoin('idea_tag', 'idea_tag.ideaId = idea.id')->innerJoin('hashtag', 'idea_tag.hashtagId = hashtag.id')->where(['=', 'hashtag.name', $hashtag])->andWhere(['=', 'idea.status', StatusConstant::ACTIVE]);
         $countQuery = clone $query;
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
         $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();

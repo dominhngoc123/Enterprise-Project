@@ -30,32 +30,52 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-md-4 mb-4 mb-md-0">
                     <div>
                         <img loading="lazy" src="../images/post/post-4.jpg" class="img-fluid" alt="post-thumb" style="height:200px; object-fit: cover;">
-                        
+
                     </div>
                 </div>
                 <div class="col-md-8">
                     <h3 class="h5"><a class="post-title" href="<?= Url::toRoute(['view', 'id' => $idea->id]) ?>"><?= $idea->title ?></a></h3>
                     <ul class="list-inline post-meta mb-2">
                         <li class="list-inline-item"><i class="ti-user mr-2"></i>
-                        <?php if ($idea->post_type == IdeaTypeConstant::PUBLIC): ?>
-                            <a href="<?= Url::to(['user/author', 'id' => $idea->userId]) ?>"><?= User::find()->where(['=', 'id', $idea->userId])->one()->full_name; ?></a>
-                        <?php else: ?>
-                            <span>Anonymous</span>
-                        <?php endif; ?>
+                            <?php if ($idea->post_type == IdeaTypeConstant::PUBLIC) : ?>
+                                <a href="<?= Url::to(['user/author', 'id' => $idea->userId]) ?>"><?= User::find()->where(['=', 'id', $idea->userId])->one()->full_name; ?></a>
+                            <?php else : ?>
+                                <span>Anonymous</span>
+                            <?php endif; ?>
                         </li>
                         <li class="list-inline-item">Posted at:
                             <?php
                             date_default_timezone_set('UTC');
                             $posted_at = strtotime($idea->created_at);
-                            
+
                             $date = date('Y-m-d', $posted_at);
                             $time = date('h:i', $posted_at);
                             echo "$date $time";
                             ?>
                         </li>
-                        <li class="list-inline-item">Category : <a href="<?= Url::to(['idea/get-ideas-by-category', 'categoryId' => $idea->categoryId]); ?>" class="ml-1"><?php $category = Category::find()->where(['=', 'id', $idea->categoryId])->one(); if ($category) { echo $category->name; } ?></a>
+                        <li class="list-inline-item">Category : <a href="<?= Url::to(['idea/get-ideas-by-category', 'categoryId' => $idea->categoryId]); ?>" class="ml-1"><?php $category = Category::find()->where(['=', 'id', $idea->categoryId])->one();
+                                                                                                                                                                            if ($category) {
+                                                                                                                                                                                echo $category->name;
+                                                                                                                                                                            } ?></a>
                         </li>
-                        <li class="list-inline-item">Department : <a href="<?= Url::to(['idea/get-ideas-by-department', 'departmentId' => $idea->departmentId]); ?>" class="ml-1"><?php $department = Department::find()->where(['=', 'id', $idea->departmentId])->one(); if ($department) { echo $department->name; }; ?></a>
+                        <li class="list-inline-item">Department : <a href="<?= Url::to(['idea/get-ideas-by-department', 'departmentId' => $idea->departmentId]); ?>" class="ml-1"><?php $department = Department::find()->where(['=', 'id', $idea->departmentId])->one();
+                                                                                                                                                                                    if ($department) {
+                                                                                                                                                                                        echo $department->name;
+                                                                                                                                                                                    }; ?></a>
+                        </li>
+                        <li class="list-inline-item">Hashtag :
+                            <?php $hashtags = $idea->getIdeatags()->all();
+                            if (count($hashtags) > 0) {
+                                foreach ($hashtags as $hashtag) {
+                                    $tag = $hashtag->getHashtag()->one();
+                            ?>
+                                    <a href="<?= Url::to(['idea/get-ideas-by-hashtag', 'hashtag' => substr($tag->name, 1, (strlen($tag->name) - 1))]) ?>" class="ml-1">
+                                        <?= $tag->name; ?>
+                                    </a>
+                            <?php
+                                }
+                            }
+                            ?>
                         </li>
                     </ul>
                     <div class="snip_text mb-10"><?= htmlspecialchars_decode(stripslashes($idea->content)); ?></div>

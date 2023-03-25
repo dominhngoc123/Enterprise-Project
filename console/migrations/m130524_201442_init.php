@@ -1,5 +1,6 @@
 <?php
 
+use common\models\constant\StatusConstant;
 use yii\db\Migration;
 
 class m130524_201442_init extends Migration
@@ -106,8 +107,28 @@ class m130524_201442_init extends Migration
             'ideaId' => $this->integer(),
             'status' => $this->smallInteger()->notNull()->defaultValue(common\models\constant\StatusConstant::ACTIVE),
             'created_at' => $this->string(),
-
         ], $tableOptions);
+
+        $this->createTable('{{%hashtag}}', [
+            'id' => $this->primaryKey(),
+            'name' => $this->string(20)->unique()->notNull(),
+            'status' => $this->smallInteger()->defaultValue(StatusConstant::ACTIVE),
+            'created_at' => $this->string(),
+            'created_by' => $this->string(),
+            'updated_at' => $this->string(),
+            'updated_by' => $this->string(),
+        ]);
+
+        $this->createTable('{{%idea_tag}}', [
+            'id' => $this->primaryKey(),
+            'ideaId' => $this->integer(),
+            'hashtagId' => $this->integer(),
+            'status' => $this->smallInteger()->defaultValue(StatusConstant::ACTIVE),
+            'created_at' => $this->string(),
+            'created_by' => $this->string(),
+            'updated_at' => $this->string(),
+            'updated_by' => $this->string(),
+        ]);
 
         $this->addForeignKey('FK_user_department', 'user', 'departmentId', 'department', 'id');
         $this->addForeignKey('FK_idea_idea', 'idea', 'parentId', 'idea', 'id');
@@ -118,6 +139,8 @@ class m130524_201442_init extends Migration
         $this->addForeignKey('FK_idea_campaign', 'idea', 'campaignId', 'campaign', 'id');
         $this->addForeignKey('FK_reaction_user', 'reaction', 'userId', 'user', 'id');
         $this->addForeignKey('FK_reaction_idea', 'reaction', 'ideaId', 'idea', 'id');
+        $this->addForeignKey('FK_idea_hashtag', 'idea_tag', 'ideaId', 'idea', 'id');
+        $this->addForeignKey('FK_hashtag_idea', 'idea_tag', 'hashtagId', 'hashtag', 'id');
     }
 
     public function down()

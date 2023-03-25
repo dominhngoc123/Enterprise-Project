@@ -6,6 +6,7 @@ use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\switchinput\SwitchInput;
+use yii\jui\AutoComplete;
 
 /** @var yii\web\View $this */
 /** @var frontend\models\Idea $model */
@@ -30,7 +31,8 @@ use kartik\switchinput\SwitchInput;
             </div>
         </div>
         <?= $form->field($model, 'title')->textarea(['rows' => 4]) ?>
-
+        <input type="text" id="hash-tag" class="form-control" />
+        <?= $form->field($model, 'hashtag')->textArea(['rows' => 2, 'readonly' => true]) ?>
         <?= $form->field($model, 'content')->widget(CKEditor::className(), [
             'options' => ['rows' => 6],
             'preset' => 'basic',
@@ -113,3 +115,35 @@ use kartik\switchinput\SwitchInput;
 
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#hash-tag').on('keyup', function(e) {
+            if (e.keyCode == 32) {
+                let hashTag = $(this).val();
+                if (hashTag.trim() !== "") {
+                    if (hashTag.indexOf("#") == 0) {
+                        hashTag = hashTag;
+                    } else if (hashTag.indexOf("#") == -1) {
+                        hashTag = "#" + hashTag;
+                    } else {
+                        hashTag = "#" + hashTag.replac("#", "");
+                    }
+                    if ($("#idea-hashtag").val().trim() !== "")
+                    {
+                        $("#idea-hashtag").val($("#idea-hashtag").val() + ", " + hashTag);
+                    }
+                    else
+                    {
+                        $("#idea-hashtag").val($("#idea-hashtag").val() + hashTag);
+                    }
+                    $("#hash-tag").val("");
+                }
+                else
+                {
+                    $("#hash-tag").val("");
+                }
+            }
+        });
+    });
+</script>
