@@ -38,8 +38,7 @@ class UserController extends Controller
                         [
                             'allow' => true,
                             'matchCallback' => function ($rule, $action) {
-                                return !\Yii::$app->user->isGuest 
-                                    && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN;
+                                return User::isUserAdmin(Yii::$app->user->identity->username);
                             },
                         ],
                     ],

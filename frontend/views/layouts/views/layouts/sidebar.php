@@ -180,7 +180,6 @@ echo TabsX::widget([
 ?>
 <script>
    $(document).ready(function() {
-      console.log("OK");
       $('#w1-dd0-tab0').addClass('active');
       $('#w1-dd0-tab0').addClass('show');
       $('#w1-dd0-tab0').show();

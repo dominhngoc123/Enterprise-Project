@@ -225,4 +225,44 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
+
+    public static function isUserAdmin($username)
+    {
+        if (static::findOne(['username' => $username, 'role' => UserRolesConstant::ADMIN, 'status' => StatusConstant::ACTIVE])) {
+            return true;
+        } else {
+            Yii::$app->session->setFlash('error', 'You do not have permission to access this page');
+            return false;
+        }
+    }
+
+    public static function isUserManager($username)
+    {
+        if (static::findOne(['username' => $username, 'role' => UserRolesConstant::QA_MANAGER, 'status' => StatusConstant::ACTIVE])) {
+            return true;
+        } else {
+            Yii::$app->session->setFlash('error', 'You do not have permission to access this page');
+            return false;
+        }
+    }
+
+    public static function isUserCoordinator($username)
+    {
+        if (static::findOne(['username' => $username, 'role' => UserRolesConstant::QA_COORDINATOR, 'status' => StatusConstant::ACTIVE])) {
+            return true;
+        } else {
+            Yii::$app->session->setFlash('error', 'You do not have permission to access this page');
+            return false;
+        }
+    }
+
+    public static function isUserStaff($username)
+    {
+        if (static::findOne(['username' => $username, 'role' => UserRolesConstant::STAFF, 'status' => StatusConstant::ACTIVE])) {
+            return true;
+        } else {
+            Yii::$app->session->setFlash('error', 'You do not have permission to access this page');
+            return false;
+        }
+    }
 }

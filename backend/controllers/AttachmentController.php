@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\Attachment;
 use backend\models\AttachmentSearch;
+use backend\models\User;
 use common\models\constant\UserRolesConstant;
 use Yii;
 use yii\web\Controller;
@@ -35,8 +36,7 @@ class AttachmentController extends Controller
                         [
                             'allow' => true,
                             'matchCallback' => function ($rule, $action) {
-                                return !\Yii::$app->user->isGuest 
-                                    && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN;
+                                return User::isUserAdmin(Yii::$app->user->identity->username);
                             },
                         ],
                     ],

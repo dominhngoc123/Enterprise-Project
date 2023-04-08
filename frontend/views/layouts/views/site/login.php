@@ -5,7 +5,7 @@ use yii\helpers\Html;
 
 $this->title = Yii::t('app', 'Staff sign in');
 ?>
-
+<?= \diecoding\toastr\ToastrFlash::widget(); ?>
 <div class="content">
     <div class="container">
         <div class="row">

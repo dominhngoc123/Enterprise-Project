@@ -38,7 +38,7 @@ class CategoryController extends Controller
                             'allow' => true,
                             'matchCallback' => function ($rule, $action) {
                                 return !\Yii::$app->user->isGuest 
-                                    && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN;
+                                    && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN || \Yii::$app->user->identity->role === UserRolesConstant::QA_COORDINATOR;
                             },
                         ],
                     ],

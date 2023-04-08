@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\Campaign;
 use backend\models\CampaignSearch;
+use backend\models\User;
 use common\models\constant\StatusConstant;
 use common\models\constant\UserRolesConstant;
 use Yii;
@@ -36,8 +37,7 @@ class CampaignController extends Controller
                         [
                             'allow' => true,
                             'matchCallback' => function ($rule, $action) {
-                                return !\Yii::$app->user->isGuest 
-                                    && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN;
+                                return User::isUserAdmin(Yii::$app->user->identity->username);
                             },
                         ],
                     ],

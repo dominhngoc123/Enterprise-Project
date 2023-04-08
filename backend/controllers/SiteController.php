@@ -2,6 +2,10 @@
 
 namespace backend\controllers;
 
+use backend\models\Campaign;
+use backend\models\Department;
+use backend\models\Idea;
+use backend\models\User;
 use common\models\LoginForm;
 use Yii;
 use yii\filters\VerbFilter;
@@ -62,7 +66,20 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+       if (User::isUserAdmin(Yii::$app->user->identity->username) || User::isUserManager(Yii::$app->user->identity->username))
+       {
+        $departmentData = Department::find()->all();
+        $campaignData = Campaign::find()->all();
+        $ideaData = Idea::find()->select(['count(*) as idea_count, MONTH(created_at), YEAR(created_at)'])->groupBy(['MONTH(created_at), YEAR(created_at)'])->all();
+
+        return $this->render('index', [
+            'departmentData' => $departmentData,
+            'campaignData' => $campaignData,
+            'ideaData' => $ideaData
+        ]);
+       }
+       Yii::$app->session->setFlash('You do not have permission to access this page');
+       return $this->goBack();
     }
 
     /**
@@ -79,8 +96,8 @@ class SiteController extends Controller
         $this->layout = 'blank';
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        if ($model->load(Yii::$app->request->post()) && $model->loginAdmin()) {
+            return $this->goHome();
         }
 
         $model->password = '';

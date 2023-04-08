@@ -43,6 +43,8 @@ class Idea extends \yii\db\ActiveRecord
     public $file;
     public $hashtag;
     public $allowTermsConditions;
+    public $idea_count;
+    public $month;
 
     /**
      * {@inheritdoc}
@@ -67,7 +69,7 @@ class Idea extends \yii\db\ActiveRecord
         return [
             [['title', 'content'], 'string'],
             [['title', 'content', 'hashtag', 'allowTermsConditions'], 'safe'],
-            [['parentId', 'userId', 'categoryId', 'campaignId', 'upvote_count', 'downvote_count', 'view_count', 'post_type', 'status'], 'integer'],
+            [['parentId', 'userId', 'categoryId', 'campaignId', 'upvote_count', 'downvote_count', 'view_count', 'post_type', 'status', 'month', 'idea_count'], 'integer'],
             [['created_at', 'created_by', 'updated_at', 'updated_by'], 'string', 'max' => 255],
             [['campaignId'], 'exist', 'skipOnError' => true, 'targetClass' => campaign::class, 'targetAttribute' => ['campaignId' => 'id']],
             [['parentId'], 'exist', 'skipOnError' => true, 'targetClass' => Idea::class, 'targetAttribute' => ['parentId' => 'id']],
@@ -102,6 +104,8 @@ class Idea extends \yii\db\ActiveRecord
             'created_by' => Yii::t('app', 'Created By'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'updated_by' => Yii::t('app', 'Updated By'),
+            'month' => Yii::t('app', 'Month'),
+            'idea_count' => Yii::t('app', 'Number of idea')
         ];
     }
 

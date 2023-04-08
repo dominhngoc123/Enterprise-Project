@@ -9,6 +9,7 @@ use backend\models\Department;
 use backend\models\Idea;
 use backend\models\IdeaSearch;
 use backend\models\UploadForm;
+use backend\models\User;
 use common\helpers\DownloadHelper;
 use common\helpers\EmailHelper;
 use common\models\constant\StatusConstant;
@@ -60,8 +61,7 @@ class IdeaController extends Controller
                         [
                             'allow' => true,
                             'matchCallback' => function ($rule, $action) {
-                                return !\Yii::$app->user->isGuest
-                                    && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN;
+                                return User::isUserAdmin(Yii::$app->user->identity->username) || User:: isUserManager(Yii::$app->user->identity->username);
                             },
                         ],
                     ],

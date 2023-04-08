@@ -20,6 +20,7 @@ use Yii;
  */
 class Department extends \yii\db\ActiveRecord
 {
+    public $idea_count;
     /**
      * {@inheritdoc}
      */
@@ -80,5 +81,10 @@ class Department extends \yii\db\ActiveRecord
     public function getUsers()
     {
         return $this->hasMany(User::class, ['departmentId' => 'id']);
+    }
+
+    public function getIdeas()
+    {
+        return $this->hasMany(Idea::class, ['departmentId' => 'id']);
     }
 }

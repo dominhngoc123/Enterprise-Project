@@ -503,10 +503,13 @@ class IdeaController extends Controller
 
     public function actionSearch($inputSearch)
     {
-        $query = Idea::find();
-        $query->andFilterWhere(['like', 'title', $inputSearch])
-            ->orFilterWhere(['like', 'content', $inputSearch]);
-        $query->andwhere(['=', 'status', StatusConstant::ACTIVE])->andWhere(['parentId' => NULL]);
+        $query = Idea::find()
+                ->innerJoin('idea_tag', 'idea.id = idea_tag.ideaId')
+                ->innerJoin('hashtag', 'hashtag.id = idea_tag.hashtagId');
+        $query->andFilterWhere(['like', 'idea.title', $inputSearch])
+            ->orFilterWhere(['like', 'idea.content', $inputSearch])
+            ->orFilterWhere(['like', 'hashtag.name', $inputSearch]);
+        $query->andwhere(['=', 'idea.status', StatusConstant::ACTIVE])->andWhere(['idea.parentId' => NULL]);
         $countQuery = clone $query;
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5]);
         $ideas = $query->offset($pages->offset)->limit($pages->limit)->all();
