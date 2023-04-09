@@ -1,7 +1,11 @@
 <?php
 
+use common\models\constant\StatusConstant;
+use frontend\models\Hashtag;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\jui\AutoComplete;
 
 ?>
 <!-- Navbar -->
@@ -28,8 +32,7 @@ use yii\helpers\Url;
                   <a class="nav-link" href="#">Contact</a>
                </li>
                <li class="nav-item dropdown">
-                  <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
-                     aria-expanded="false">
+                  <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                      Account</i>
                   </a>
                   <div class="dropdown-menu">
@@ -46,7 +49,18 @@ use yii\helpers\Url;
                <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
                <div class="search-wrapper">
                   <form action="<?= Url::to(['idea/search']) ?>" method="GET" class="h-100">
-                     <input class="search-box pl-4" id="search-query" name="inputSearch" type="search" placeholder="Type &amp; Hit Enter...">
+                     <?php
+                     $name = Hashtag::find()->select(['RIGHT(name, LENGTH(name) - 1) as name'])->where(['=', 'status', StatusConstant::ACTIVE])->asArray()->all();
+                     $data = ArrayHelper::getColumn($name, 'name');
+                     echo AutoComplete::widget([
+                        'id' => 'search-box',
+                        'name' => 'inputSearch',
+                        'clientOptions' => [
+                           'class' => 'search-box pl-4',
+                           'source' => $data,
+                        ],
+                     ]);
+                     ?>
                   </form>
                   <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
                </div>

@@ -412,7 +412,7 @@ a:hover {
   opacity: 1;
 }
 
-.search-box {
+#search-box {
   height: 100%;
   width: 100%;
   border: 0;
@@ -420,9 +420,14 @@ a:hover {
   font-size: 20px;
   padding: 0;
 }
-.search-box:focus {
+#search-box:focus {
   box-shadow: none !important;
   outline: 0;
+}
+
+#ui-id-1 {
+  border-bottom-left-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
 }
 
 .search-close {
