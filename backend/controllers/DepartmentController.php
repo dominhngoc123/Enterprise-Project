@@ -129,7 +129,6 @@ class DepartmentController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-        Yii::$app->session->setFlash('success', 'Successfully delete department');
         return $this->redirect(['index']);
     }
 

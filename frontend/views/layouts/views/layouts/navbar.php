@@ -14,7 +14,7 @@ use yii\jui\AutoComplete;
 
       <nav class="navbar navbar-expand-lg navbar-white">
          <a class="navbar-brand" href="/">
-            <img class="img-fluid" width="150px" src="../images/logo.png" alt="LogBook">
+            <img class="img-fluid" width="150px" src="../images/logo_2.png" alt="LogBook" style="height: 45px; width: auto;">
          </a>
          <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
             <i class="ti-menu"></i>

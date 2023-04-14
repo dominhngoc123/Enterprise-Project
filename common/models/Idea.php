@@ -69,6 +69,7 @@ class Idea extends \yii\db\ActiveRecord
         return [
             [['title', 'content'], 'string'],
             [['title', 'content', 'hashtag', 'allowTermsConditions'], 'safe'],
+            [['categoryId', 'campaignId', 'title', 'content'], 'required'],
             [['parentId', 'userId', 'categoryId', 'campaignId', 'upvote_count', 'downvote_count', 'view_count', 'post_type', 'status', 'month', 'idea_count'], 'integer'],
             [['created_at', 'created_by', 'updated_at', 'updated_by'], 'string', 'max' => 255],
             [['campaignId'], 'exist', 'skipOnError' => true, 'targetClass' => campaign::class, 'targetAttribute' => ['campaignId' => 'id']],

@@ -1,5 +1,6 @@
 <?php
 
+use common\models\constant\UserRolesConstant;
 use yii\helpers\Url;
 ?>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -37,8 +38,32 @@ use yii\helpers\Url;
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <?php
-            echo \hail812\adminlte\widgets\Menu::widget([
-                'items' => [
+            if (Yii::$app->user->identity->role == UserRolesConstant::ADMIN)
+            {
+                $items = [
+                    [
+                        'label' => 'USERS',
+                        'icon' => 'users',
+                        // 'badge' => '<span class="right badge badge-info">2</span>',
+                        'items' => [
+                            ['label' => 'Manage users', 'url' => ['user/index'], 'icon' => 'user'],
+                        ]
+                    ],
+                    [
+                        'label' => 'UNIVERSITY',
+                        'icon' => 'university',
+                        // 'iconStyle' => 'fa-solid',
+                        // 'badge' => '<span class="right badge badge-info">2</span>',
+                        'items' => [
+                            ['label' => 'Manage campaign', 'url' => ['campaign/index'], 'icon' => 'calendar'],
+                            ['label' => 'Manage department', 'url' => ['department/index'], 'icon' => 'building'],
+                        ]
+                    ],
+                ];
+            }
+            else if (Yii::$app->user->identity->role == UserRolesConstant::QA_MANAGER)
+            {
+                $items = [
                     [
                         'label' => 'USERS',
                         'icon' => 'users',
@@ -52,25 +77,14 @@ use yii\helpers\Url;
                         'icon' => 'tachometer-alt',
                         // 'badge' => '<span class="right badge badge-info">2</span>',
                         'items' => [
-                            ['label' => 'Manage category', 'url' => ['category/index'], 'icon' => 'bookmark'],
+                            ['label' => 'Manage category', 'url' => ['category/index'], 'icon' => 'bookmark', 'disabled' => true],
                             ['label' => 'Manage idea', 'url' => ['idea/index'], 'icon' => 'comment-alt', 'iconStyle' => 'fas'],
                         ]
                     ],
-                    [
-                        'label' => 'UNIVERSITY',
-                        'icon' => 'university',
-                        // 'iconStyle' => 'fa-solid',
-                        // 'badge' => '<span class="right badge badge-info">2</span>',
-                        'items' => [
-                            ['label' => 'Manage campaign', 'url' => ['campaign/index'], 'icon' => 'calendar'],
-                            ['label' => 'Manage department', 'url' => ['department/index'], 'icon' => 'building'],
-                        ]
-                    ],
-                    ['label' => 'DEVELOPMENT', 'header' => true],
-                    ['label' => 'Gii',  'icon' => 'file-code', 'url' => ['/gii'], 'target' => '_blank'],
-                    ['label' => 'Debug', 'icon' => 'bug', 'url' => ['/debug'], 'target' => '_blank'],
-                    
-                ],
+                ];
+            }
+            echo \hail812\adminlte\widgets\Menu::widget([
+                'items' => $items
             ]);
             ?>
         </nav>

@@ -44,33 +44,4 @@ class AttachmentController extends Controller
             ]
         );
     }
-
-    public function actionIndex()
-    {
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-    }
-
-    public function actionDownload($id)
-    {
-        $model = $this->findModel($id);
-        if ($model && !empty($model->url))
-        {
-            Yii::$app->response->sendFile($model->url);
-        }
-    }
-    /**
-     * Finds the Attachment model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return Attachment the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = Attachment::findOne(['id' => $id])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-    }
 }

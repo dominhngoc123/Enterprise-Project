@@ -2,33 +2,34 @@
 
 namespace frontend\controllers;
 
-use backend\helpers\DownloadHelper;
-use common\helpers\EmailHelper;
-use common\models\constant\ConfigParams;
-use common\models\constant\ReactionTypeConstant;
-use common\models\constant\StatusConstant;
-use frontend\models\Campaign;
-use frontend\models\Attachment;
-use frontend\models\Category;
-use frontend\models\Department;
-use frontend\models\Hashtag;
-use frontend\models\Idea;
-use frontend\models\IdeaSearch;
-use frontend\models\IdeaTag;
-use frontend\models\Reaction;
-use frontend\models\UploadForm;
-use frontend\models\User;
 use Yii;
-use yii\bootstrap5\Html as Bootstrap5Html;
-use yii\data\Pagination;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
-use yii\helpers\FileHelper;
-use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\web\Controller;
+use yii\data\Pagination;
+use frontend\models\Idea;
+use frontend\models\User;
 use yii\web\UploadedFile;
+use yii\filters\VerbFilter;
+use yii\helpers\FileHelper;
+use frontend\models\Hashtag;
+use frontend\models\IdeaTag;
+use yii\helpers\ArrayHelper;
+use frontend\models\Campaign;
+use frontend\models\Category;
+use frontend\models\Reaction;
+use common\helpers\EmailHelper;
+use frontend\models\Attachment;
+use frontend\models\Department;
+use frontend\models\IdeaSearch;
+use frontend\models\UploadForm;
+use yii\web\NotFoundHttpException;
+use backend\helpers\DownloadHelper;
+use common\models\constant\ConfigParams;
+use common\models\constant\StatusConstant;
+use yii\bootstrap5\Html as Bootstrap5Html;
+use common\models\constant\ReactionTypeConstant;
+use common\models\constant\UserRolesConstant;
 
 /**
  * IdeaController implements the CRUD actions for Idea model.
@@ -143,79 +144,102 @@ class IdeaController extends Controller
      */
     public function actionCreate()
     {
-        $all_files = array();
-        $all_files_preview = array();
-        $files_type = array();
-        $model = new Idea();
+        if (Yii::$app->user->identity->role == UserRolesConstant::STAFF) {
+            $all_files = array();
+            $all_files_preview = array();
+            $files_type = array();
+            $model = new Idea();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post())) {
-                $model->parentId = null;
-                $model->upvote_count = 0;
-                $model->downvote_count = 0;
-                $files = UploadedFile::getInstances($model, 'file');
-                $hashtags = $this->request->post()['Idea']['hashtag'];
-                $model->departmentId = Yii::$app->user->identity->departmentId;
-                if ($model->save()) {
-                    EmailHelper::emailWhenSubmitIdea($model);
-                    $hashtags = explode(",", $hashtags);
-                    if ($hashtags) {
-                        $existHashtags = Hashtag::find()->all();
-                        foreach ($hashtags as $tag) {
-                            $tag = trim($tag);
-                            $temp = $this->getExistingTag($tag, $existHashtags);
-                            $hashtag = $temp ? $temp : new Hashtag();
-                            if (!$temp) {
-                                $hashtag->name = $tag;
-                                $hashtag->save();
+            if ($this->request->isPost) {
+                if ($model->load($this->request->post())) {
+                    $isValid = true;
+                    if ($model->categoryId == "") {
+                        $model->addError('categoryId', "Category cannot be blank");
+                        $isValid = false;
+                    }
+                    if ($model->campaignId == "") {
+                        $model->addError('campaignId', "Campaign cannot be blank");
+                        $isValid = false;
+                    }
+
+                    if ($model->title == "") {
+                        $model->addError('title', "Title cannot be blank");
+                        $isValid = false;
+                    }
+                    if ($model->content == "") {
+                        $model->addError('content', "Content cannot be blank");
+                        $isValid = false;
+                    }
+                    if ($isValid) {
+                        $model->parentId = null;
+                        $model->upvote_count = 0;
+                        $model->downvote_count = 0;
+                        $files = UploadedFile::getInstances($model, 'file');
+                        $hashtags = $this->request->post()['Idea']['hashtag'];
+                        $model->departmentId = Yii::$app->user->identity->departmentId;
+                        if ($model->save()) {
+                            EmailHelper::emailWhenSubmitIdea($model);
+                            $hashtags = explode(",", $hashtags);
+                            if ($hashtags) {
+                                $existHashtags = Hashtag::find()->all();
+                                foreach ($hashtags as $tag) {
+                                    $tag = trim($tag);
+                                    $temp = $this->getExistingTag($tag, $existHashtags);
+                                    $hashtag = $temp ? $temp : new Hashtag();
+                                    if (!$temp) {
+                                        $hashtag->name = $tag;
+                                        $hashtag->save();
+                                    }
+                                    $idea_tag = new IdeaTag();
+                                    $idea_tag->ideaId = $model->id;
+                                    $idea_tag->hashtagId = $hashtag->id;
+                                    $idea_tag->save();
+                                }
                             }
-                            $idea_tag = new IdeaTag();
-                            $idea_tag->ideaId = $model->id;
-                            $idea_tag->hashtagId = $hashtag->id;
-                            $idea_tag->save();
-                        }
-                    }
-                    $folder_name = 'idea_' . time();
-                    FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
-                    foreach ($files as $file) {
-                        $uploaded_filename = Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
-                        $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . $uploaded_filename;
-                        $isUploaded = $file->saveAs($url);
-                        if ($isUploaded) {
-                            $attachment = new Attachment();
-                            $attachment->url = Url::to('@backend_alias') . '/uploads/' . $folder_name . '/' . $uploaded_filename;
-                            $attachment->file_type = $this->getFileType($file->extension);
-                            $attachment->original_name = $file->name;
-                            $attachment->ideaId = $model->id;
-                            $attachment->save();
+                            $folder_name = 'idea_' . time();
+                            FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
+                            foreach ($files as $file) {
+                                $uploaded_filename = Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                                $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . $uploaded_filename;
+                                $isUploaded = $file->saveAs($url);
+                                if ($isUploaded) {
+                                    $attachment = new Attachment();
+                                    $attachment->url = Url::to('@backend_alias') . '/uploads/' . $folder_name . '/' . $uploaded_filename;
+                                    $attachment->file_type = $this->getFileType($file->extension);
+                                    $attachment->original_name = $file->name;
+                                    $attachment->ideaId = $model->id;
+                                    $attachment->save();
+                                } else {
+                                    Yii::$app->session->setFlash('warning', 'Error when upload file: ' . $file->name);
+                                }
+                            }
+                            Yii::$app->session->setFlash('success', 'Create new idea success');
                         } else {
-                            Yii::$app->session->setFlash('warning', 'Error when upload file: ' . $file->name);
+                            Yii::$app->session->setFlash('error', 'Cannot create new idea');
                         }
+
+                        return $this->redirect(['view', 'id' => $model->id]);
                     }
-                    Yii::$app->session->setFlash('success', 'Create new idea success');
-                } else {
-                    Yii::$app->session->setFlash('error', 'Cannot create new idea');
                 }
-
-                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                $model->loadDefaultValues();
             }
-        } else {
-            $model->loadDefaultValues();
+
+            $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
+            $currentDate = new \yii\db\Expression('NOW()');
+            $campaign = Campaign::find()->where(['>=', "STR_TO_DATE(closure_date, '%d-%m-%Y')", $currentDate])->andWhere(['<=', "STR_TO_DATE(start_date, '%d-%m-%Y')", $currentDate])->andWhere(['=', 'status', StatusConstant::ACTIVE])->all();
+
+            return $this->render('create', [
+                'all_files' => $all_files,
+                'all_files_preview' => $all_files_preview,
+                'files_type' => $files_type,
+                'model' => $model,
+                'category' => ArrayHelper::map($category, 'id', 'name'),
+                'campaign' => ArrayHelper::map($campaign, 'id', 'name'),
+                'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
+            ]);
         }
-
-        $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
-        $currentDate = new \yii\db\Expression('NOW()');
-        $campaign = Campaign::find()->where(['>=', "STR_TO_DATE(closure_date, '%d-%m-%Y')", $currentDate])->andWhere(['<=', "STR_TO_DATE(start_date, '%d-%m-%Y')", $currentDate])->andWhere(['=', 'status', StatusConstant::ACTIVE])->all();
-
-        return $this->render('create', [
-            'all_files' => $all_files,
-            'all_files_preview' => $all_files_preview,
-            'files_type' => $files_type,
-            'model' => $model,
-            'category' => ArrayHelper::map($category, 'id', 'name'),
-            'campaign' => ArrayHelper::map($campaign, 'id', 'name'),
-            'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
-        ]);
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 
     private function getExistingTag($tag, $list)
@@ -232,20 +256,24 @@ class IdeaController extends Controller
         $comment = new Idea();
         if ($this->request->isPost) {
             if ($comment->load($this->request->post())) {
-                $comment->title = "";
-                $comment->parentId = $ideaId;
-                $comment->categoryId = null;
-                $comment->campaignId = null;
-                $comment->upvote_count = 0;
-                $comment->downvote_count = 0;
-                if ($comment->save()) {
-                    Yii::$app->session->setFlash('success', 'Create new comment success');
-                    $idea = Idea::find()->where(['id' => $ideaId])->andWhere(['status' => StatusConstant::ACTIVE])->one();
-                    if ($idea && Yii::$app->user->identity->id != $idea->userId) {
-                        EmailHelper::emailWhenCreateComment($idea, $comment);
-                    }
+                if ($comment->content == "") {
+                    $comment->addError('content', 'Comment content cannot be blank');
                 } else {
-                    Yii::$app->session->setFlash('error', 'Cannot create new comment');
+                    $comment->title = "";
+                    $comment->parentId = $ideaId;
+                    $comment->categoryId = null;
+                    $comment->campaignId = null;
+                    $comment->upvote_count = 0;
+                    $comment->downvote_count = 0;
+                    if ($comment->save()) {
+                        Yii::$app->session->setFlash('success', 'Create new comment success');
+                        $idea = Idea::find()->where(['id' => $ideaId])->andWhere(['status' => StatusConstant::ACTIVE])->one();
+                        if ($idea && Yii::$app->user->identity->id != $idea->userId) {
+                            EmailHelper::emailWhenCreateComment($idea, $comment);
+                        }
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Cannot create new comment');
+                    }
                 }
             }
         }
@@ -261,94 +289,185 @@ class IdeaController extends Controller
      */
     public function actionUpdate($id)
     {
-        $all_files = array();
-        $all_files_preview = array();
-        $files_type = array();
-        $model = $this->findModel($id);
-        $temp = Hashtag::find()->select(['name'])->innerJoin('idea_tag', 'idea_tag.hashtagId = hashtag.id')->where(['=', 'idea_tag.ideaId', $model->id])->andWhere(['=', 'hashtag.status', StatusConstant::ACTIVE])->asArray()->column();
-        $model->hashtag = implode(", ", $temp);
-        $uploaded_file = Attachment::find()->where(['=', 'ideaId', $model->id])->all();
-        $folder_url = "";
-        if ($uploaded_file) {
-            $folder_url = substr(end($uploaded_file)->url, 0, strripos(end($uploaded_file)->url, '/'));
-            foreach ($uploaded_file as $file) {
-                $all_files[] = $file->url;
-                $obj = (object) array('caption' => $file->original_name, 'url' => Url::to(['idea/delete-file', 'id' => $file->id]), 'key' => $file->id, 'type' => $file->file_type);
-                $files_type[] = $file->file_type;
-                $all_files_preview[] = $obj;
+        if (Yii::$app->user->identity->role == UserRolesConstant::STAFF) {
+            $all_files = array();
+            $all_files_preview = array();
+            $files_type = array();
+            $model = $this->findModel($id);
+            $temp = Hashtag::find()->select(['name'])->innerJoin('idea_tag', 'idea_tag.hashtagId = hashtag.id')->where(['=', 'idea_tag.ideaId', $model->id])->andWhere(['=', 'hashtag.status', StatusConstant::ACTIVE])->asArray()->column();
+            $model->hashtag = implode(", ", $temp);
+            $uploaded_file = Attachment::find()->where(['=', 'ideaId', $model->id])->all();
+            $folder_url = "";
+            if ($uploaded_file) {
+                $folder_url = substr(end($uploaded_file)->url, 0, strripos(end($uploaded_file)->url, '/'));
+                foreach ($uploaded_file as $file) {
+                    $all_files[] = $file->url;
+                    $obj = (object) array('caption' => $file->original_name, 'url' => Url::to(['idea/delete-file', 'id' => $file->id]), 'key' => $file->id, 'type' => $file->file_type);
+                    $files_type[] = $file->file_type;
+                    $all_files_preview[] = $obj;
+                }
             }
-        }
-        if ($this->request->isPost && $model->load($this->request->post())) {
-            $model->parentId = null;
-            $model->upvote_count = 0;
-            $model->downvote_count = 0;
-            $removed_id = array();
-            foreach ($uploaded_file as $file) {
-                $removed_id[] = $file->id;
-            }
-            $this->deleteFiles($removed_id);
-            $files = UploadedFile::getInstances($model, 'file');
-            $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
-            $model->save();
-            $hashtags = $this->request->post()['Idea']['hashtag'];
-            $hashtags = explode(",", $hashtags);
-            if ($hashtags) {
-                $existHashtags = Hashtag::find()->all();
-                \Yii::$app
-                    ->db
-                    ->createCommand()
-                    ->delete('idea_tag', ['ideaId' => $id])
-                    ->execute();
-                foreach ($hashtags as $tag) {
-                    $tag = trim($tag);
-                    $temp = $this->getExistingTag($tag, $existHashtags);
-                    $hashtag = $temp ? $temp : new Hashtag();
-                    if (!$temp) {
-                        $hashtag->name = $tag;
-                        $hashtag->save();
+            if ($this->request->isPost && $model->load($this->request->post())) {
+                $model->parentId = null;
+                $model->upvote_count = 0;
+                $model->downvote_count = 0;
+                $removed_id = array();
+                foreach ($uploaded_file as $file) {
+                    $removed_id[] = $file->id;
+                }
+                $this->deleteFiles($removed_id);
+                $files = UploadedFile::getInstances($model, 'file');
+                $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
+                $model->save();
+                $hashtags = $this->request->post()['Idea']['hashtag'];
+                $hashtags = explode(",", $hashtags);
+                if ($hashtags) {
+                    $existHashtags = Hashtag::find()->all();
+                    \Yii::$app
+                        ->db
+                        ->createCommand()
+                        ->delete('idea_tag', ['ideaId' => $id])
+                        ->execute();
+                    foreach ($hashtags as $tag) {
+                        $tag = trim($tag);
+                        $temp = $this->getExistingTag($tag, $existHashtags);
+                        $hashtag = $temp ? $temp : new Hashtag();
+                        if (!$temp) {
+                            $hashtag->name = $tag;
+                            $hashtag->save();
+                        }
+                        $idea_tag = new IdeaTag();
+                        $idea_tag->ideaId = $model->id;
+                        $idea_tag->hashtagId = $hashtag->id;
+                        $idea_tag->save();
                     }
-                    $idea_tag = new IdeaTag();
-                    $idea_tag->ideaId = $model->id;
-                    $idea_tag->hashtagId = $hashtag->id;
-                    $idea_tag->save();
                 }
+                foreach ($files as $file) {
+                    $uploaded_filename = Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                    if ($folder_url != '' && file_exists($folder_url)) {
+                        $url = $folder_url . '/' . $uploaded_filename;
+                    } else {
+                        $folder_name = 'idea_' . time();
+                        FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
+                        $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . $uploaded_filename;
+                    }
+                    $isUploaded = $file->saveAs($url);
+                    if ($isUploaded) {
+                        $attachment = new Attachment();
+                        $attachment->url = Url::to('@backend_alias') . '/uploads/' . $folder_name . '/' . $uploaded_filename;
+                        $attachment->file_type = $this->getFileType($file->extension);
+                        $attachment->original_name = $file->name;
+                        $attachment->ideaId = $model->id;
+                        $attachment->save();
+                    } else {
+                        Yii::$app->session->setFlash('warning', 'Error when upload file: ' . $file->name);
+                    }
+                }
+                return $this->redirect(['view', 'id' => $model->id]);
             }
-            foreach ($files as $file) {
-                $uploaded_filename = Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
-                if ($folder_url != '' && file_exists($folder_url)) {
-                    $url = $folder_url . '/' . $uploaded_filename;
-                } else {
-                    $folder_name = 'idea_' . time();
-                    FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
-                    $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . $uploaded_filename;
-                }
-                $isUploaded = $file->saveAs($url);
-                if ($isUploaded) {
-                    $attachment = new Attachment();
-                    $attachment->url = Url::to('@backend_alias') . '/uploads/' . $folder_name . '/' . $uploaded_filename;
-                    $attachment->file_type = $this->getFileType($file->extension);
-                    $attachment->original_name = $file->name;
-                    $attachment->ideaId = $model->id;
-                    $attachment->save();
-                } else {
-                    Yii::$app->session->setFlash('warning', 'Error when upload file: ' . $file->name);
-                }
-            }
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-        $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
-        $currentDate = new \yii\db\Expression('NOW()');
-        $campaign = Campaign::find()->where(['>=', "STR_TO_DATE(closure_date, '%d-%m-%Y')", $currentDate])->andWhere(['<=', "STR_TO_DATE(start_date, '%d-%m-%Y')", $currentDate])->andWhere(['=', 'status', StatusConstant::ACTIVE])->all();
+            $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
+            $currentDate = new \yii\db\Expression('NOW()');
+            $campaign = Campaign::find()->where(['>=', "STR_TO_DATE(closure_date, '%d-%m-%Y')", $currentDate])->andWhere(['<=', "STR_TO_DATE(start_date, '%d-%m-%Y')", $currentDate])->andWhere(['=', 'status', StatusConstant::ACTIVE])->all();
 
-        return $this->render('update', [
-            'all_files' => $all_files,
-            'all_files_preview' => $all_files_preview,
-            'files_type' => $files_type,
-            'model' => $model,
-            'category' => ArrayHelper::map($category, 'id', 'name'),
-            'campaign' => ArrayHelper::map($campaign, 'id', 'name'),
-            'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
-        ]);
+            return $this->render('update', [
+                'all_files' => $all_files,
+                'all_files_preview' => $all_files_preview,
+                'files_type' => $files_type,
+                'model' => $model,
+                'category' => ArrayHelper::map($category, 'id', 'name'),
+                'campaign' => ArrayHelper::map($campaign, 'id', 'name'),
+                'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
+            ]);
+            $all_files = array();
+            $all_files_preview = array();
+            $files_type = array();
+            $model = $this->findModel($id);
+            $temp = Hashtag::find()->select(['name'])->innerJoin('idea_tag', 'idea_tag.hashtagId = hashtag.id')->where(['=', 'idea_tag.ideaId', $model->id])->andWhere(['=', 'hashtag.status', StatusConstant::ACTIVE])->asArray()->column();
+            $model->hashtag = implode(", ", $temp);
+            $uploaded_file = Attachment::find()->where(['=', 'ideaId', $model->id])->all();
+            $folder_url = "";
+            if ($uploaded_file) {
+                $folder_url = substr(end($uploaded_file)->url, 0, strripos(end($uploaded_file)->url, '/'));
+                foreach ($uploaded_file as $file) {
+                    $all_files[] = $file->url;
+                    $obj = (object) array('caption' => $file->original_name, 'url' => Url::to(['idea/delete-file', 'id' => $file->id]), 'key' => $file->id, 'type' => $file->file_type);
+                    $files_type[] = $file->file_type;
+                    $all_files_preview[] = $obj;
+                }
+            }
+            if ($this->request->isPost && $model->load($this->request->post())) {
+                $model->parentId = null;
+                $model->upvote_count = 0;
+                $model->downvote_count = 0;
+                $removed_id = array();
+                foreach ($uploaded_file as $file) {
+                    $removed_id[] = $file->id;
+                }
+                $this->deleteFiles($removed_id);
+                $files = UploadedFile::getInstances($model, 'file');
+                $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
+                $model->save();
+                $hashtags = $this->request->post()['Idea']['hashtag'];
+                $hashtags = explode(",", $hashtags);
+                if ($hashtags) {
+                    $existHashtags = Hashtag::find()->all();
+                    \Yii::$app
+                        ->db
+                        ->createCommand()
+                        ->delete('idea_tag', ['ideaId' => $id])
+                        ->execute();
+                    foreach ($hashtags as $tag) {
+                        $tag = trim($tag);
+                        $temp = $this->getExistingTag($tag, $existHashtags);
+                        $hashtag = $temp ? $temp : new Hashtag();
+                        if (!$temp) {
+                            $hashtag->name = $tag;
+                            $hashtag->save();
+                        }
+                        $idea_tag = new IdeaTag();
+                        $idea_tag->ideaId = $model->id;
+                        $idea_tag->hashtagId = $hashtag->id;
+                        $idea_tag->save();
+                    }
+                }
+                foreach ($files as $file) {
+                    $uploaded_filename = Yii::$app->security->generateRandomString(12) . '.' . $file->extension;
+                    if ($folder_url != '' && file_exists($folder_url)) {
+                        $url = $folder_url . '/' . $uploaded_filename;
+                    } else {
+                        $folder_name = 'idea_' . time();
+                        FileHelper::createDirectory(Url::to('@backend') . '/web/uploads/' . $folder_name, $mode = 0775, $recursive = true);
+                        $url = Url::to('@backend') . '/web/uploads/' . $folder_name . '/' . $uploaded_filename;
+                    }
+                    $isUploaded = $file->saveAs($url);
+                    if ($isUploaded) {
+                        $attachment = new Attachment();
+                        $attachment->url = Url::to('@backend_alias') . '/uploads/' . $folder_name . '/' . $uploaded_filename;
+                        $attachment->file_type = $this->getFileType($file->extension);
+                        $attachment->original_name = $file->name;
+                        $attachment->ideaId = $model->id;
+                        $attachment->save();
+                    } else {
+                        Yii::$app->session->setFlash('warning', 'Error when upload file: ' . $file->name);
+                    }
+                }
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+            $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
+            $currentDate = new \yii\db\Expression('NOW()');
+            $campaign = Campaign::find()->where(['>=', "STR_TO_DATE(closure_date, '%d-%m-%Y')", $currentDate])->andWhere(['<=', "STR_TO_DATE(start_date, '%d-%m-%Y')", $currentDate])->andWhere(['=', 'status', StatusConstant::ACTIVE])->all();
+
+            return $this->render('update', [
+                'all_files' => $all_files,
+                'all_files_preview' => $all_files_preview,
+                'files_type' => $files_type,
+                'model' => $model,
+                'category' => ArrayHelper::map($category, 'id', 'name'),
+                'campaign' => ArrayHelper::map($campaign, 'id', 'name'),
+                'ideaType' => ArrayHelper::map(IdeaController::ideaType, 'id', 'name')
+            ]);
+        }
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 
     public function actionDeleteFile($id)
@@ -504,8 +623,8 @@ class IdeaController extends Controller
     public function actionSearch($inputSearch)
     {
         $query = Idea::find()
-                ->innerJoin('idea_tag', 'idea.id = idea_tag.ideaId')
-                ->innerJoin('hashtag', 'hashtag.id = idea_tag.hashtagId');
+            ->innerJoin('idea_tag', 'idea.id = idea_tag.ideaId')
+            ->innerJoin('hashtag', 'hashtag.id = idea_tag.hashtagId');
         $query->andFilterWhere(['like', 'idea.title', $inputSearch])
             ->orFilterWhere(['like', 'idea.content', $inputSearch])
             ->orFilterWhere(['like', 'hashtag.name', $inputSearch]);

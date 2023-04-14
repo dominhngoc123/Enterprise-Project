@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\Category;
 use backend\models\CategorySearch;
 use backend\models\Idea;
+use backend\models\User;
 use common\models\constant\StatusConstant;
 use common\models\constant\UserRolesConstant;
 use Yii;
@@ -37,8 +38,7 @@ class CategoryController extends Controller
                         [
                             'allow' => true,
                             'matchCallback' => function ($rule, $action) {
-                                return !\Yii::$app->user->isGuest 
-                                    && \Yii::$app->user->identity->role === UserRolesConstant::ADMIN || \Yii::$app->user->identity->role === UserRolesConstant::QA_COORDINATOR;
+                                return User::isUserManager(Yii::$app->user->identity->username);
                             },
                         ],
                     ],

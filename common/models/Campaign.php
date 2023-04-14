@@ -68,6 +68,18 @@ class Campaign extends \yii\db\ActiveRecord
             $this->addError('start_date','Please give correct Start and End dates');
             $this->addError('end_date','Please give correct Start and End dates');
         }
+        else
+        {
+            $now = date('Y-m-d h:i:s');
+            if (strtotime($this->end_date) < strtotime($now))
+            {
+                $this->addError('end_date','End date must greater than current date');
+            }
+            if (strtotime($this->start_date) < strtotime($now))
+            {
+                $this->addError('start_date','Start date must greater than current date');
+            }
+        }
     }
 
     public function validateClosureDate() {

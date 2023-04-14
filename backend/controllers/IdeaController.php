@@ -61,7 +61,7 @@ class IdeaController extends Controller
                         [
                             'allow' => true,
                             'matchCallback' => function ($rule, $action) {
-                                return User::isUserAdmin(Yii::$app->user->identity->username) || User:: isUserManager(Yii::$app->user->identity->username);
+                                return User:: isUserManager(Yii::$app->user->identity->username);
                             },
                         ],
                     ],
@@ -340,16 +340,6 @@ class IdeaController extends Controller
     public function actionDelete($id)
     {
         $this->deleteFilesOfIdea($id);
-        \Yii::$app
-            ->db
-            ->createCommand()
-            ->delete('idea', ['parentId' => $id])
-            ->execute();
-        \Yii::$app
-            ->db
-            ->createCommand()
-            ->delete('reaction', ['ideaId' => $id])
-            ->execute();
         $this->findModel($id)->delete();
         Yii::$app->session->setFlash('success', 'Successfully delete idea');
         return $this->redirect(['index']);

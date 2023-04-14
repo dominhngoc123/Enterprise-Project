@@ -130,17 +130,17 @@ class m130524_201442_init extends Migration
             'updated_by' => $this->string(),
         ]);
 
-        $this->addForeignKey('FK_user_department', 'user', 'departmentId', 'department', 'id');
-        $this->addForeignKey('FK_idea_idea', 'idea', 'parentId', 'idea', 'id');
-        $this->addForeignKey('FK_idea_user', 'idea', 'userId', 'user', 'id');
-        $this->addForeignKey('FK_idea_department', 'idea', 'departmentId', 'department', 'id');
-        $this->addForeignKey('FK_attachment_idea', 'attachment', 'ideaId', 'idea', 'id');
-        $this->addForeignKey('FK_user_category', 'idea', 'categoryId', 'category', 'id');
-        $this->addForeignKey('FK_idea_campaign', 'idea', 'campaignId', 'campaign', 'id');
-        $this->addForeignKey('FK_reaction_user', 'reaction', 'userId', 'user', 'id');
-        $this->addForeignKey('FK_reaction_idea', 'reaction', 'ideaId', 'idea', 'id');
-        $this->addForeignKey('FK_idea_hashtag', 'idea_tag', 'ideaId', 'idea', 'id');
-        $this->addForeignKey('FK_hashtag_idea', 'idea_tag', 'hashtagId', 'hashtag', 'id');
+        $this->addForeignKey('FK_user_department', 'user', 'departmentId', 'department', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('FK_idea_idea', 'idea', 'parentId', 'idea', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('FK_idea_user', 'idea', 'userId', 'user', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('FK_idea_department', 'idea', 'departmentId', 'department', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('FK_attachment_idea', 'attachment', 'ideaId', 'idea', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('FK_user_category', 'idea', 'categoryId', 'category', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('FK_idea_campaign', 'idea', 'campaignId', 'campaign', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('FK_reaction_user', 'reaction', 'userId', 'user', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('FK_reaction_idea', 'reaction', 'ideaId', 'idea', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('FK_idea_hashtag', 'idea_tag', 'ideaId', 'idea', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('FK_hashtag_idea', 'idea_tag', 'hashtagId', 'hashtag', 'id', 'CASCADE', 'CASCADE');
     }
 
     public function down()

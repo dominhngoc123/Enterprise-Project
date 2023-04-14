@@ -37,9 +37,25 @@ $this->params['breadcrumbs'][] = $this->title;
             'address',
             'departmentId',
             'status',
-            'created_at',
+            [
+                'label' => 'Created at',
+                'value' => function ($model)
+                {
+                    return date("d/m/Y H:i:s", $model->created_at);
+                }
+            ],
             'created_by',
-            'updated_at',
+            [
+                'label' => 'Updated at',
+                'value' => function ($model)
+                {
+                    if ($model->updated_at)
+                    {
+                        return date("d/m/Y H:i:s", $model->updated_at);
+                    }
+                    return "(not set)";
+                }
+            ],
             'updated_by',
         ],
     ]) ?>

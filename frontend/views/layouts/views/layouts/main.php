@@ -3,6 +3,7 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+use common\models\constant\UserRolesConstant;
 use yii\helpers\Html;
 use yii\bootstrap4\Breadcrumbs;
 use yii\helpers\Url;
@@ -105,7 +106,9 @@ $this->registerJsFile($publishedRes[1] . '/control_sidebar.js', ['depends' => '\
     <!-- /.content-wrapper -->
     <!-- Main Footer -->
     <?= $this->render('footer') ?>
-    <a class="fixedbutton" href="<?= Url::to(['idea/create']) ?>"><i class="fa fa-plus" aria-hidden="true"></i></a>
+    <?php if (Yii::$app->user->identity->role == UserRolesConstant::STAFF): ?>
+        <a class="fixedbutton" href="<?= Url::to(['idea/create']) ?>"><i class="fa fa-plus" aria-hidden="true"></i></a>
+    <?php endif; ?>
 
     <?php $this->endBody() ?>
     <!-- JS Plugins -->

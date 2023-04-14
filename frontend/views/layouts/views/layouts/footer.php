@@ -1,9 +1,9 @@
-<footer class="section-sm border-top border-default">
+<footer class="section-sm border-top border-default" style="margin-left: 50px; margin-right: 50px;">
       <div class="container-footer">
          <div class="row justify-content-between">
             <div class="col-md-3 mb-4">
                <a class="mb-4 d-block" href="index.html">
-                  <img class="img-fluid" width="150px" src="../images/logo.png" alt="LogBook">
+                  <img class="img-fluid" width="150px" src="../images/logo_2.png" alt="LogBook">
                </a>
                <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
             </div>
@@ -41,9 +41,6 @@
          </div>
          <div class="scroll-top">
             <a href="javascript:void(0);" id="scrollTop"><i class="ti-angle-up"></i></a>
-         </div>
-         <div class="text-center">
-            <p class="content">&copy; 2020 - Design &amp; Develop By <a href="https://themefisher.com/" target="_blank">Themefisher</a></p>
          </div>
       </div>
    </footer>
