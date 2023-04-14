@@ -38,7 +38,11 @@ class CategoryController extends Controller
                         [
                             'allow' => true,
                             'matchCallback' => function ($rule, $action) {
-                                return User::isUserManager(Yii::$app->user->identity->username);
+                                if (!Yii::$app->user->isGuest)
+                                {
+                                    return User::isUserManager(Yii::$app->user->identity->username);
+                                }
+                                return false;
                             },
                         ],
                     ],

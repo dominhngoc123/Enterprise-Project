@@ -37,7 +37,11 @@ class CampaignController extends Controller
                         [
                             'allow' => true,
                             'matchCallback' => function ($rule, $action) {
-                                return User::isUserAdmin(Yii::$app->user->identity->username);
+                                if (!Yii::$app->user->isGuest)
+                                {
+                                    return User::isUserAdmin(Yii::$app->user->identity->username);
+                                }
+                                return false;
                             },
                         ],
                     ],

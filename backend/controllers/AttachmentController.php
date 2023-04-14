@@ -30,17 +30,6 @@ class AttachmentController extends Controller
                         'delete' => ['POST'],
                     ],
                 ],
-                'access' => [
-                    'class' => \yii\filters\AccessControl::class,
-                    'rules' => [
-                        [
-                            'allow' => true,
-                            'matchCallback' => function ($rule, $action) {
-                                return User::isUserAdmin(Yii::$app->user->identity->username);
-                            },
-                        ],
-                    ],
-                ],
             ]
         );
     }
