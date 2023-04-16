@@ -66,20 +66,20 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-       if (User::isUserAdmin(Yii::$app->user->identity->username) || User::isUserManager(Yii::$app->user->identity->username))
-       {
-        $departmentData = Department::find()->all();
-        $campaignData = Campaign::find()->all();
-        $ideaData = Idea::find()->select(['count(*) as idea_count, MONTH(created_at), YEAR(created_at)'])->groupBy(['MONTH(created_at), YEAR(created_at)'])->all();
+        if (User::isUserAdmin(Yii::$app->user->identity->username) || User::isUserManager(Yii::$app->user->identity->username)) {
+            $departmentData = Department::find()->all();
+            $campaignData = Campaign::find()->all();
+            $ideaData = Idea::find()->select(['count(*) as idea_count, MONTH(created_at), YEAR(created_at)'])->groupBy(['MONTH(created_at), YEAR(created_at)'])->all();
 
-        return $this->render('index', [
-            'departmentData' => $departmentData,
-            'campaignData' => $campaignData,
-            'ideaData' => $ideaData
-        ]);
-       }
-       Yii::$app->session->setFlash('You do not have permission to access this page');
-       return $this->goBack();
+            return $this->render('index', [
+                'departmentData' => $departmentData,
+                'campaignData' => $campaignData,
+                'ideaData' => $ideaData
+            ]);
+        } else {
+            Yii::$app->session->setFlash('You do not have permission to access this page');
+        }
+        return $this->goBack();
     }
 
     /**

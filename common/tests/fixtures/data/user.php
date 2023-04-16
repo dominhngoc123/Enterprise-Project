@@ -1,5 +1,7 @@
 <?php
 
+use common\models\constant\UserRolesConstant;
+
 return [
     [
         'id' => 1,
@@ -14,7 +16,7 @@ return [
         'departmentId' => null,
         'auth_key' => '$2y$13$iTkZeIYcbrCwQxVLnpueneajQUrIJZG2kntbzDOTGyEX2hV973Nkq',
         'status' => 1,
-        'role' => 0,
+        'role' => UserRolesConstant::ADMIN,
         'created_at' => '1681510796',
         'created_by' => 'admin',
         'updated_at' => null,
@@ -33,7 +35,7 @@ return [
         'departmentId' => null,
         'auth_key' => '$2y$13$iTkZeIYcbrCwQxVLnpueneajQUrIJZG2kntbzDOTGyEX2hV973Nkq',
         'status' => 1,
-        'role' => 0,
+        'role' => UserRolesConstant::QA_MANAGER,
         'created_at' => '1681510796',
         'created_by' => 'admin',
         'updated_at' => null,
@@ -52,7 +54,7 @@ return [
         'departmentId' => 1,
         'auth_key' => '$2y$13$iTkZeIYcbrCwQxVLnpueneajQUrIJZG2kntbzDOTGyEX2hV973Nkq',
         'status' => 1,
-        'role' => 0,
+        'role' => UserRolesConstant::QA_COORDINATOR,
         'created_at' => '1681510796',
         'created_by' => 'admin',
         'updated_at' => null,
@@ -71,7 +73,7 @@ return [
         'departmentId' => 1,
         'auth_key' => '$2y$13$iTkZeIYcbrCwQxVLnpueneajQUrIJZG2kntbzDOTGyEX2hV973Nkq',
         'status' => 1,
-        'role' => 0,
+        'role' => UserRolesConstant::STAFF,
         'created_at' => '1681510796',
         'created_by' => 'admin',
         'updated_at' => null,
@@ -90,7 +92,7 @@ return [
         'departmentId' => 2,
         'auth_key' => '$2y$13$iTkZeIYcbrCwQxVLnpueneajQUrIJZG2kntbzDOTGyEX2hV973Nkq',
         'status' => 1,
-        'role' => 0,
+        'role' => UserRolesConstant::QA_COORDINATOR,
         'created_at' => '1681510796',
         'created_by' => 'admin',
         'updated_at' => null,
@@ -109,7 +111,7 @@ return [
         'departmentId' => 2,
         'auth_key' => '$2y$13$iTkZeIYcbrCwQxVLnpueneajQUrIJZG2kntbzDOTGyEX2hV973Nkq',
         'status' => 1,
-        'role' => 0,
+        'role' => UserRolesConstant::STAFF,
         'created_at' => '1681510796',
         'created_by' => 'admin',
         'updated_at' => null,

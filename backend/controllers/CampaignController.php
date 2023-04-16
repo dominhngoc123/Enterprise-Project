@@ -41,6 +41,7 @@ class CampaignController extends Controller
                                 {
                                     return User::isUserAdmin(Yii::$app->user->identity->username);
                                 }
+                                Yii::$app->session->setFlash('error', 'You do not have permission to access this page');
                                 return false;
                             },
                         ],

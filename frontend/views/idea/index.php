@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ?>
                         </li>
                     </ul>
-                    <div class="snip_text mb-10"><?= htmlspecialchars_decode(stripslashes($idea->content)); ?></div>
+                    <div class="snip_text mb-10" style="height: 35px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars_decode(stripslashes($idea->content)); ?></div>
                     <a href="<?= Url::toRoute(['view', 'id' => $idea->id]) ?>" class="btn btn-outline-primary">Continue Reading</a>
                 </div>
             </article>

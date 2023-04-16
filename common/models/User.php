@@ -75,7 +75,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         ];
     }
 
-    public function beforeSave($insert) {
+    public function beforeSave($insert)
+    {
 
         if ($this->isNewRecord) {
             $this->auth_key = \Yii::$app->security->generateRandomString();
@@ -231,7 +232,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         if (static::findOne(['username' => $username, 'role' => UserRolesConstant::ADMIN, 'status' => StatusConstant::ACTIVE])) {
             return true;
         } else {
-            Yii::$app->session->setFlash('error', 'You do not have permission to access this page');
             return false;
         }
     }
@@ -241,7 +241,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         if (static::findOne(['username' => $username, 'role' => UserRolesConstant::QA_MANAGER, 'status' => StatusConstant::ACTIVE])) {
             return true;
         } else {
-            Yii::$app->session->setFlash('error', 'You do not have permission to access this page');
             return false;
         }
     }
@@ -251,7 +250,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         if (static::findOne(['username' => $username, 'role' => UserRolesConstant::QA_COORDINATOR, 'status' => StatusConstant::ACTIVE])) {
             return true;
         } else {
-            Yii::$app->session->setFlash('error', 'You do not have permission to access this page');
             return false;
         }
     }
@@ -261,7 +259,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         if (static::findOne(['username' => $username, 'role' => UserRolesConstant::STAFF, 'status' => StatusConstant::ACTIVE])) {
             return true;
         } else {
-            Yii::$app->session->setFlash('error', 'You do not have permission to access this page');
             return false;
         }
     }

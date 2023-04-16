@@ -65,6 +65,7 @@ class IdeaController extends Controller
                                 {
                                     return User::isUserManager(Yii::$app->user->identity->username);
                                 }
+                                Yii::$app->session->setFlash('error', 'You do not have permission to access this page');
                                 return false;
                             },
                         ],
