@@ -120,7 +120,7 @@ $this->params['breadcrumbs'] = [['label' => $this->title]];
                     'labels' => ChartDataHelper::getDepartmentLabels(), // Your labels
                     'datasets' => [
                         [
-                            'data' => ChartDataHelper::getContributerInDepartment(), // Your dataset
+                            'data' => ChartDataHelper::getContributorInDepartment(), // Your dataset
                             'label' => '',
                             'backgroundColor' => [
                                 '#ADC3FF',

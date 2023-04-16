@@ -43,8 +43,7 @@ class ChartDataHelper
         return $label;
     }
 
-    public static function getContributerInDepartment()
-    {
+    public static function getContributorInDepartment() {
         $data = Idea::find()->select(['COUNT(DISTINCT idea.userId) as contributor, department.name'])
             ->innerJoin('user', 'idea.userId = user.id')
             ->innerJoin('department', 'user.departmentId = department.id')
@@ -59,9 +58,7 @@ class ChartDataHelper
         }
         return $chart_data;
     }
-
-    public static function getNumberOfLikePerMonth()
-    {
+    public static function getNumberOfLikePerMonth() {
         $data = Idea::find()->select(['SUM(upvote_count) as like_count, MONTH(created_at) as month'])
             ->where(['=', 'YEAR(created_at)', date("Y")])
             ->andWhere(['=', 'status', StatusConstant::ACTIVE])
@@ -76,9 +73,7 @@ class ChartDataHelper
         }
         return $chart_data;
     }
-
-    public static function getNumberOfUnLikePerMonth()
-    {
+    public static function getNumberOfUnLikePerMonth() {
         $data = Idea::find()->select(['SUM(downvote_count) as dislike_count, MONTH(created_at) as month'])
             ->where(['=', 'YEAR(created_at)', date("Y")])
             ->andWhere(['=', 'status', StatusConstant::ACTIVE])

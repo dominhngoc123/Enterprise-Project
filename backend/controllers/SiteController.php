@@ -77,7 +77,7 @@ class SiteController extends Controller
                 'ideaData' => $ideaData
             ]);
         } else {
-            Yii::$app->session->setFlash('You do not have permission to access this page');
+            Yii::$app->session->setFlash('warning', 'You do not have permission to access this page');
         }
         return $this->goBack();
     }
