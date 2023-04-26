@@ -63,7 +63,7 @@ class Campaign extends \yii\db\ActiveRecord
         ];
     }
 
-    public function validateDates(){
+    public function validateDates() {
         if(strtotime($this->end_date) <= strtotime($this->start_date)){
             $this->addError('start_date','Please give correct Start and End dates');
             $this->addError('end_date','Please give correct Start and End dates');

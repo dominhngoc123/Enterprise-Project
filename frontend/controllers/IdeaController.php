@@ -184,16 +184,18 @@ class IdeaController extends Controller
                                 $existHashtags = Hashtag::find()->all();
                                 foreach ($hashtags as $tag) {
                                     $tag = trim($tag);
-                                    $temp = $this->getExistingTag($tag, $existHashtags);
-                                    $hashtag = $temp ? $temp : new Hashtag();
-                                    if (!$temp) {
-                                        $hashtag->name = $tag;
-                                        $hashtag->save();
+                                    if ($tag != "") {
+                                        $temp = $this->getExistingTag($tag, $existHashtags);
+                                        $hashtag = $temp ? $temp : new Hashtag();
+                                        if (!$temp) {
+                                            $hashtag->name = $tag;
+                                            $hashtag->save();
+                                        }
+                                        $idea_tag = new IdeaTag();
+                                        $idea_tag->ideaId = $model->id;
+                                        $idea_tag->hashtagId = $hashtag->id;
+                                        $idea_tag->save();
                                     }
-                                    $idea_tag = new IdeaTag();
-                                    $idea_tag->ideaId = $model->id;
-                                    $idea_tag->hashtagId = $hashtag->id;
-                                    $idea_tag->save();
                                 }
                             }
                             $folder_name = 'idea_' . time();
@@ -227,7 +229,10 @@ class IdeaController extends Controller
 
             $category = Category::find()->where(['status' => StatusConstant::ACTIVE])->all();
             $currentDate = new \yii\db\Expression('NOW()');
-            $campaign = Campaign::find()->where(['>=', "STR_TO_DATE(closure_date, '%d-%m-%Y')", $currentDate])->andWhere(['<=', "STR_TO_DATE(start_date, '%d-%m-%Y')", $currentDate])->andWhere(['=', 'status', StatusConstant::ACTIVE])->all();
+            $campaign = Campaign::find()->where(['>=', "STR_TO_DATE(closure_date, '%d-%m-%Y')", $currentDate])
+                                        ->andWhere(['<=', "STR_TO_DATE(start_date, '%d-%m-%Y')", $currentDate])
+                                        ->andWhere(['=', 'status', StatusConstant::ACTIVE])
+                                        ->all();
 
             return $this->render('create', [
                 'all_files' => $all_files,

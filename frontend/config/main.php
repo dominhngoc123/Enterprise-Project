@@ -25,13 +25,13 @@ return [
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-auth', 'httpOnly' => true, 'domain' => '.EP.web'],
+            'identityCookie' => ['name' => '_identity-auth', 'httpOnly' => true, 'domain' => '.ep-group2.online'],
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend
             'name' => 'auth_session',
             'cookieParams' => [
-                'domain' => '.EP.web',
+                'domain' => '.ep-group2.online',
                 'httpOnly' => true,
             ],
         ],

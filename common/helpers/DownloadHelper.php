@@ -39,7 +39,20 @@ class DownloadHelper
         // Zip archive will be created only after closing object
         $zip->close();
         if (file_exists($zipUrl)) {
-            \Yii::$app->response->sendFile($zipUrl)->send();
+            var_dump("Check");
+            die();
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/zip');
+            header('Content-Disposition: attachment; filename='.basename($zipName));
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($zipUrl));
+            ob_clean();
+            flush();
+            readfile($zipUrl);
+            exit; 
             unlink($zipUrl);
         }
     }

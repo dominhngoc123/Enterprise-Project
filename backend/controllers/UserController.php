@@ -89,7 +89,7 @@ class UserController extends Controller
     public function actionCreate()
     {
         $model = new User();
-        $role = array(UserRolesConstant::ADMIN => 'Admin' , UserRolesConstant::QA_COORDINATOR => 'QA Coordinator', UserRolesConstant::QA_MANAGER =>'QA Manager', UserRolesConstant::STAFF => 'Staff');
+        $role = array(UserRolesConstant::QA_COORDINATOR => 'QA Coordinator', UserRolesConstant::QA_MANAGER =>'QA Manager', UserRolesConstant::STAFF => 'Staff');
         $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
@@ -129,7 +129,7 @@ class UserController extends Controller
     {
         $department = Department::find()->where(['status' => StatusConstant::ACTIVE])->all();
         $model = $this->findModel($id);
-        $role = array(UserRolesConstant::ADMIN => 'Admin' , UserRolesConstant::QA_COORDINATOR => 'QA Coordinator', UserRolesConstant::QA_MANAGER =>'QA Manager', UserRolesConstant::STAFF => 'Staff');
+        $role = array(UserRolesConstant::QA_COORDINATOR => 'QA Coordinator', UserRolesConstant::QA_MANAGER =>'QA Manager', UserRolesConstant::STAFF => 'Staff');
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', 'Successfully update user');
