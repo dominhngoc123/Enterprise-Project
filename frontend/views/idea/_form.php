@@ -21,18 +21,19 @@ use yii\jui\AutoComplete;
                 <?= $form->field($model, 'categoryId')->widget(Select2::classname(), [
                     'data' => $category,
                     'options' => ['placeholder' => 'Select a category ...']
-                ]) ?>
+                ])->label(Yii::t('app', "Category")) ?>
             </div>
             <div class="col col-md-6 col-lg-6 col-sm-12">
                 <?= $form->field($model, 'campaignId')->widget(Select2::classname(), [
                     'data' => $campaign,
                     'options' => ['placeholder' => 'Select a campaign ...']
-                ]) ?>
+                ])->label(Yii::t("app", "Campaign")) ?>
             </div>
         </div>
         <?= $form->field($model, 'title')->textarea(['rows' => 4]) ?>
+        <label for="hash-tag">Hash tag</label>
         <input type="text" id="hash-tag" class="form-control" />
-        <?= $form->field($model, 'hashtag')->textArea(['rows' => 2, 'readonly' => true]) ?>
+        <?= $form->field($model, 'hashtag')->textArea(['rows' => 2, 'readonly' => true])->label(false); ?>
         <?= $form->field($model, 'content')->widget(CKEditor::className(), [
             'options' => ['rows' => 6],
             'preset' => 'basic',

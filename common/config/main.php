@@ -3,8 +3,8 @@ return [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
-        '@backend_alias' => stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://' . 'admin.ep-group2.online',
-        '@frontend_alias' => stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://' . 'client.ep-group2.online',
+        '@backend_alias' => stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://' . 'admin.ep.com',
+        '@frontend_alias' => stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://' . 'client.ep.com',
     ],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
